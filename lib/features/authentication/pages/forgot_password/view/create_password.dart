@@ -1,0 +1,211 @@
+import 'package:fintech/core/core.dart';
+import 'package:fintech/features/authentication/pages/forgot_password/controller/forgot_password_controller.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+
+class CreatePassword extends StatefulWidget {
+  const CreatePassword({super.key});
+
+  @override
+  State<CreatePassword> createState() => _CreatePasswordState();
+}
+
+class _CreatePasswordState extends State<CreatePassword> {
+  ForgotPasswordController forgotPasswordController = Get.find();
+  @override
+  void initState() {
+    forgotPasswordController.passwordCtrl.clear();
+    forgotPasswordController.confirmPassCtrl.clear();
+    forgotPasswordController.isConfirmPassObscure.value = true;
+    forgotPasswordController.isPassObscure.value = true;
+    super.initState();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BgContainer(
+      child: SafeArea(
+        child: Form(
+          key: forgotPasswordController.formKeyCreateNewPass,
+          child: Stack(
+            alignment: Alignment.bottomCenter,
+            children: [
+              SizedBox.expand(),
+              SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    FadeSlideTransition(
+                      seconds: 1,
+                      child: Container(
+                        height: MediaQuery.of(context).size.height * 0.75,
+                        width: MediaQuery.of(context).size.width,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        alignment: Alignment.bottomCenter,
+                        decoration: BoxDecoration(
+                          borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(24)),
+                          color: VariableUtilities.theme.whiteColor,
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const IndicatorWidget(),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            FadeSlideTransition(
+                              child: Text(
+                                'Create New Password',
+                                style: FontUtilities.style(
+                                    fontSize: 26,
+                                    fontColor:
+                                        VariableUtilities.theme.thirdColor,
+                                    fontWeight: FWT.bold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            FadeSlideTransition(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0),
+                                child: Text(
+                                  'Your new password must be different from previous used passwords.',
+                                  style: FontUtilities.style(
+                                    fontSize: 12,
+                                    fontColor:
+                                        VariableUtilities.theme.thirdColor,
+                                    fontWeight: FWT.regular,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 30,
+                            ),
+                            FadeSlideTransition(
+                              child: Text(
+                                'Password',
+                                style: FontUtilities.style(
+                                    fontSize: 14,
+                                    fontColor:
+                                        VariableUtilities.theme.thirdColor,
+                                    fontWeight: FWT.semiBold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Obx(
+                              () => FadeSlideTransition(
+                                child: CustomTextField(
+                                  controller:
+                                      forgotPasswordController.passwordCtrl,
+                                  isObscureText: forgotPasswordController
+                                      .isPassObscure.value,
+                                  validator: (value) {
+                                    return Validator.validatePassword(
+                                        value ?? '');
+                                  },
+                                  suffixIcon: InkwellWithRippleEffect(
+                                    onTap: () {
+                                      forgotPasswordController
+                                          .togglePassObscure();
+                                    },
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Icon(!forgotPasswordController
+                                            .isPassObscure.value
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined),
+                                  ),
+                                  hintText: '*********',
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                            FadeSlideTransition(
+                              child: Text(
+                                'Confirm Password',
+                                style: FontUtilities.style(
+                                    fontSize: 14,
+                                    fontColor:
+                                        VariableUtilities.theme.thirdColor,
+                                    fontWeight: FWT.semiBold),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 12,
+                            ),
+                            Obx(
+                              () => FadeSlideTransition(
+                                child: CustomTextField(
+                                  controller:
+                                      forgotPasswordController.confirmPassCtrl,
+                                  isObscureText: forgotPasswordController
+                                      .isConfirmPassObscure.value,
+                                  validator: (value) {
+                                    if (value == null ||
+                                        value.trim() !=
+                                            forgotPasswordController
+                                                .passwordCtrl.text
+                                                .trim()) {
+                                      return "Password and Confirm password does not match";
+                                    }
+                                    return null;
+                                  },
+                                  suffixIcon: InkwellWithRippleEffect(
+                                    onTap: () {
+                                      forgotPasswordController
+                                          .toggleConfirmPassObscure();
+                                    },
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12),
+                                    child: Icon(!forgotPasswordController
+                                            .isConfirmPassObscure.value
+                                        ? Icons.visibility_outlined
+                                        : Icons.visibility_off_outlined),
+                                  ),
+                                  hintText: '*********',
+                                ),
+                              ),
+                            ),
+                            const Spacer(),
+                            Padding(
+                              padding:
+                                  const EdgeInsets.symmetric(horizontal: 16.0),
+                              child: FadeSlideTransition(
+                                child: CustomFlatButton(
+                                  width: MediaQuery.of(context).size.width,
+                                  onPressed: () {
+                                    forgotPasswordController
+                                        .resetPassword(context);
+                                  },
+                                  backColor:
+                                      VariableUtilities.theme.primaryColor,
+                                  title: 'Reset Password',
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
