@@ -134,7 +134,7 @@ class CustomTextField extends StatelessWidget {
               style: FontUtilities.style(
                 fontSize: fontSize ?? 13,
                 fontWeight: FWT.regular,
-                fontColor: VariableUtilities.theme.thirdColor,
+                fontColor: VariableUtilities.theme.blackColor,
               ),
               initialValue: initialValue,
               readOnly: onTap != null ? true : false,
@@ -152,8 +152,7 @@ class CustomTextField extends StatelessWidget {
                     contentPadding ?? const EdgeInsets.fromLTRB(12, 14, 12, 12),
                 suffix: suffix,
                 suffixIconConstraints: const BoxConstraints(
-                  maxHeight: 16,
-                  minWidth: 16,
+
                 ),
                 filled: (isGradientBorder ?? false) ? false : true,
                 fillColor:
@@ -224,7 +223,7 @@ class CustomTextField extends StatelessWidget {
                     FontUtilities.style(
                       fontSize: 12,
                       fontWeight: FWT.regular,
-                      fontColor: VariableUtilities.theme.thirdColor,
+                      fontColor: Colors.grey,
                     ),
                 suffixIcon: suffixIcon,
               ),
@@ -304,9 +303,15 @@ class CustomDateField extends StatelessWidget {
             child: AbsorbPointer( // Prevents typing, allows tap
               child: TextFormField(
                 controller: controller,
+                style: FontUtilities.style(
+                  fontSize: 13,
+                  fontWeight: FWT.regular,
+                  fontColor: VariableUtilities.theme.blackColor,
+                ),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
                   hintText: hintText ?? 'Select Date',
+
                   suffixIcon: const Icon(Icons.calendar_today, size: 18),
                   filled: true,
                   fillColor: fillColor ?? VariableUtilities.theme.textFieldFilledColor,

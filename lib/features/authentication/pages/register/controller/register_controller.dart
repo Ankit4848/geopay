@@ -3,12 +3,12 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:fintech/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
-import 'package:fintech/features/authentication/repo/authentication_repo.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/common/repo/common_repo.dart';
-import 'package:fintech/features/home/view/pages/repo/home_repo.dart';
-import 'package:fintech/features/kyc/controller/kyc_controller.dart';
+import 'package:geopay/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
+import 'package:geopay/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
+import 'package:geopay/features/home/view/pages/repo/home_repo.dart';
+import 'package:geopay/features/kyc/controller/kyc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -91,6 +91,8 @@ class RegisterController extends GetxController {
   RxString selectedBusinessOccupation = ''.obs;
   RxString selectedSourceOfFund = ''.obs;
   RxInt registerStep = 0.obs;
+  var isPasswordFocused = false.obs;
+  final passwordFocus=FocusNode();
 
   void updateDirectorCount(String value) {
     int count = int.tryParse(value) ?? 0;
@@ -111,6 +113,9 @@ class RegisterController extends GetxController {
       commonController.getCountryList(Get.context!);
     }
     super.onInit();
+    passwordFocus.addListener(() {
+      isPasswordFocused.value=passwordFocus.hasFocus;
+    },);
   }
 
   // Get Country List
@@ -402,17 +407,11 @@ class RegisterController extends GetxController {
           isEmailOTPShow.value = true;
 
 
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(
-              content:  Text(
-                verifyModelAPI.message!,
-                style: const TextStyle(color: Colors.white), // white font
-              ),
-              backgroundColor:  VariableUtilities.theme.primaryColor, // red background
-              duration: const Duration(seconds: 5), // show for 3 seconds
-              behavior: SnackBarBehavior.floating, // optional: floating snackbar
-            ),
+
+          DialogUtilities.showDialog(
+            message: verifyModelAPI.message!,
           );
+
 
           update();
         } else {
@@ -439,46 +438,44 @@ class RegisterController extends GetxController {
   /// Verify Email
   Future<void> verifyEmail(BuildContext context) async {
     FocusScope.of(context).requestFocus(FocusNode());
-    try {
-      EasyLoading.show();
+  //  try {
+   //   EasyLoading.show();
       FocusScope.of(context).requestFocus(FocusNode());
       Map<String, dynamic> params = {
         'email': emailCtrl.text.trim(),
         'otp': emailOTPCtrl.text.trim(),
       };
-      Map<String, dynamic>? verifyModelAPI =
+      ApiResponse? verifyModelAPI =
           await authenticationRepo.verifyEmail(context, params);
 
-      if (verifyModelAPI != null) {
+      if (verifyModelAPI != null && verifyModelAPI.success==true) {
         isEmailError.value = false;
         isEmailVerify.value = true;
         update();
 
 
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:  Text(
-              verifyModelAPI['message'],
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor:  VariableUtilities.theme.primaryColor, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          message: verifyModelAPI!.message!,
         );
-
 
       } else {
         isEmailError.value = true;
         isEmailVerify.value = false;
+
+
+        DialogUtilities.showDialog(
+          title: "Error",
+          message: verifyModelAPI!.message!,
+        );
+
+
         emailOTPCtrl.clear();
       }
-    } catch (e) {
-      print("Error: ${e}");
-    } finally {
-      EasyLoading.dismiss();
-    }
+   // } catch (e) {
+  //    print("Error: ${e}");
+  //  } finally {
+   //   EasyLoading.dismiss();
+   // }
     update();
   }
 
@@ -500,37 +497,20 @@ class RegisterController extends GetxController {
         update();
 
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:  Text(
-              verifyModelAPI.message!,
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor:  VariableUtilities.theme.primaryColor, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+
+        DialogUtilities.showDialog(
+          message: verifyModelAPI!.message!,
         );
-
-
 
 
 
         isPhoneOTPShow.value = true;
       } else {
         print(verifyModelAPI.message);
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:  Text(
-              verifyModelAPI.message!,
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor:  Colors.red, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message: verifyModelAPI!.message!,
         );
-
         isPhoneOTPShow.value = false;
       }
     } catch (e) {
@@ -561,16 +541,11 @@ class RegisterController extends GetxController {
         isPhoneVerify.value = true;
         update();
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:  Text(
-              verifyModelAPI['message'],
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor:  VariableUtilities.theme.primaryColor, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+
+
+        DialogUtilities.showDialog(
+
+          message:    verifyModelAPI['message'],
         );
 
       } else {
@@ -621,7 +596,7 @@ class RegisterController extends GetxController {
           commonController.update();
           update();
           EasyLoading.dismiss();
-          Get.back();
+
         }
       } catch (e) {
         print("Error: ${e}");
@@ -750,52 +725,31 @@ class RegisterController extends GetxController {
 
 
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content:  Text(
-                  "Please Verify Your email",
-                  style: const TextStyle(color: Colors.white), // white font
-                ),
-                backgroundColor: Colors.red, // red background
-                duration: const Duration(seconds: 5), // show for 3 seconds
-                behavior: SnackBarBehavior.floating, // optional: floating snackbar
-              ),
+            DialogUtilities.showDialog(
+              title: "Error",
+              message:    "Please Verify Your email",
             );
-
-
-
-
 
 
 
           } else if (!isPhoneVerify.value) {
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content:  Text(
-                  "Please Verify Your Phone",
-                  style: const TextStyle(color: Colors.white), // white font
-                ),
-                backgroundColor: Colors.red, // red background
-                duration: const Duration(seconds: 5), // show for 3 seconds
-                behavior: SnackBarBehavior.floating, // optional: floating snackbar
-              ),
+
+            DialogUtilities.showDialog(
+              title: "Error",
+              message:  "Please Verify Your Phone",
             );
+
           }
         }
       } else {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content:  Text(
-              "Please accept term & condition first",
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:  "Please accept term & condition first",
         );
+
+
       }
    /* } catch (e) {
       print("Error: ${e}");
@@ -860,21 +814,10 @@ class RegisterController extends GetxController {
 
     if (pendingCount > 0) {
 
-      ScaffoldMessenger.of(   Get.context!).showSnackBar(
-        SnackBar(
-          content:  Text(
-            'Please Upload All Files',
-            style: const TextStyle(color: Colors.white), // white font
-          ),
-          backgroundColor: Colors.red, // red background
-          duration: const Duration(seconds: 5), // show for 3 seconds
-          behavior: SnackBarBehavior.floating, // optional: floating snackbar
-        ),
+      DialogUtilities.showDialog(
+        title: "Error",
+        message:  'Please Upload All Files',
       );
-
-
-
-
 
 
       return false;

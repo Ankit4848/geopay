@@ -1,8 +1,8 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/model/CommonModel.dart';
-import 'package:fintech/features/profile/data/profile_data.dart';
-import 'package:fintech/features/profile/widgets/faq_card.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/model/CommonModel.dart';
+import 'package:geopay/features/profile/data/profile_data.dart';
+import 'package:geopay/features/profile/widgets/faq_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

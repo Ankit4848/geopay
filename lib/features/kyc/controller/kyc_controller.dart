@@ -1,6 +1,6 @@
-import 'package:fintech/core/validator/validator.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/common/repo/common_repo.dart';
+import 'package:geopay/core/validator/validator.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

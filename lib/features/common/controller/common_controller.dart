@@ -1,7 +1,7 @@
-import 'package:fintech/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
-import 'package:fintech/features/common/model/country_model.dart';
-import 'package:fintech/features/common/repo/common_repo.dart';
-import 'package:fintech/features/home/model/CommonModel.dart';
+import 'package:geopay/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
+import 'package:geopay/features/common/model/country_model.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
+import 'package:geopay/features/home/model/CommonModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';

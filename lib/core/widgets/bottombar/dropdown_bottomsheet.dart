@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/model/drop_down_model.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/model/drop_down_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

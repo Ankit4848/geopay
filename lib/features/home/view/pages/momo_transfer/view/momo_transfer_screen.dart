@@ -1,7 +1,7 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/controller/momo_transfer_controller.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/widgets/confirm_beneficiary_dialog.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/controller/momo_transfer_controller.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/widgets/confirm_beneficiary_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -85,7 +85,7 @@ class _MomoTransferScreenState extends State<MomoTransferScreen> {
                     const SizedBox(
                       height: 20,
                     ),*/
-                    CustomTextField(
+                  /*  CustomTextField(
                       hintText: momoTransferController.selectedCountry.value?.name ?? 'Select Payer Country',
                       labelText:  'Payer Country *',
                       onTap: () {
@@ -120,17 +120,17 @@ class _MomoTransferScreenState extends State<MomoTransferScreen> {
                     if(momoTransferController.selectedCountry.value !=
                         null)
                     SizedBox(height: 12,),
-                    Obx(
+                  */  Obx(
                       () => Visibility(
-                        visible: momoTransferController.selectedCountry.value !=
-                            null,
+                        visible:true,
                         child: CustomTextField(
                           onTap: () {
                             Get.dialog(
                               DropdownBottomsheet(
                                 label: momoTransferController.selectedBene.value==null?'Select Recipient':momoTransferController.selectedBene.value!.data!.recipientName!,
                                 dropDownItemList: momoTransferController.mobileBeneficiaryList.value
-                                    .map((channel) => DropDownModel(title: "${channel.data!.recipientName!} ${channel.data!.recipientSurname!} (${channel.data!.recipientMobile!})", icon: ''))
+                                    .map((channel) => DropDownModel(title: "${channel.data!.recipientName!} ${channel.data!.recipientSurname!} (${channel.data!.recipientMobile!})",
+                                    icon: '${channel.countryDetail!.flag}'))
                                     .toList(),
                                 onTap: (index) {
                                  // Get.back();
@@ -146,8 +146,13 @@ class _MomoTransferScreenState extends State<MomoTransferScreen> {
                           },
                           hintText: momoTransferController.selectedBene.value==null?'Select Recipient':"${momoTransferController.selectedBene.value!.data!.recipientName!} ${momoTransferController.selectedBene.value!.data!.recipientSurname!} (${momoTransferController.selectedBene.value!.data!.recipientMobile!})",
                           labelText:  'Recipient *',
+                          hintStyle: FontUtilities.style(
+                            fontSize: 13,
+                            fontWeight: FWT.regular,
+                            fontColor: VariableUtilities.theme.blackColor,
+                          ),
                           errorWidget: momoTransferController.beneError.value!=""?
-                          const Text("The Recipient id field is required.",
+                          Text(momoTransferController.beneError.value,
                               style: TextStyle(
                                   color: Colors.red,
                                   fontSize: 12
@@ -167,79 +172,89 @@ class _MomoTransferScreenState extends State<MomoTransferScreen> {
                       ),
                     ),
 
-                    SizedBox(height: 12,),
-                    CustomTextField(
-                      controller: momoTransferController.amountCtrl,
-                      textInputType:  TextInputType.numberWithOptions(decimal: true),
-                      inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),],
-                      hintText: 'Enter Amount in USD',
-                      labelText:  'Amount *',
-                      errorWidget: momoTransferController.amountError.value!=""?
-                      const Text("The txn amount field is required.",
-                        style: TextStyle(
-                            color: Colors.red,
-                            fontSize: 12
-                        )):Offstage(),
-                      onChange: (value) async {
-
-                        if(value!.isNotEmpty) {
-                          await momoTransferController.fetchAmountBreakdown();
-                        }else
-                          {
-                            momoTransferController.commissionModel.value=null;
-                          }
-                        setState(() {
-
-                        });
-                      },
-                      // prefixIcon: Padding(
-                      //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                      //   child: SvgPicture.asset(AssetUtilities.doller),
-                      // ),
-                    ),
-                    if (momoTransferController.commissionModel.value != null)
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        decoration: BoxDecoration(
-                          color: const Color(0xfff9f9f9),
-                          borderRadius: BorderRadius.circular(10),
-                        ),
+                    // Amount and Notes fields - only show after beneficiary confirmation
+                    Obx(
+                      () => Visibility(
+                        visible: momoTransferController.isBeneficiaryConfirmed.value,
                         child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _buildAmountInfo(
-                              'Processing Fee (${momoTransferController.commissionModel.value!.remitCurrency})',
-                              momoTransferController.commissionModel.value!.totalCharges!.toStringAsFixed(2),
+                            SizedBox(height: 12,),
+                            CustomTextField(
+                              controller: momoTransferController.amountCtrl,
+                              textInputType:  TextInputType.numberWithOptions(decimal: true),
+                              inputFormatters: [FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),],
+                              hintText: 'Enter Amount in USD',
+                              labelText:  'Amount *',
+                              errorWidget: momoTransferController.amountError.value!=""?
+                              const Text("The txn amount field is required.",
+                                style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 12
+                                )):Offstage(),
+                              onChange: (value) async {
+
+                                if(value!.isNotEmpty) {
+                                  await momoTransferController.fetchAmountBreakdown();
+                                }else
+                                  {
+                                    momoTransferController.commissionModel.value=null;
+                                  }
+                                setState(() {
+
+                                });
+                              },
+                              // prefixIcon: Padding(
+                              //   padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                              //   child: SvgPicture.asset(AssetUtilities.doller),
+                              // ),
                             ),
-                            _buildAmountInfo(
-                              'Net Amount (${momoTransferController.commissionModel.value!.remitCurrency})',
-                              momoTransferController.commissionModel.value!.netAmount!.toStringAsFixed(2),
-                            ),
-                            _buildAmountInfo(
-                              'Receivable Amount (${momoTransferController.commissionModel.value!.payoutCurrency})',
-                              momoTransferController.commissionModel.value!.payoutCurrencyAmount!.toStringAsFixed(2),
+                            if (momoTransferController.commissionModel.value != null)
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                decoration: BoxDecoration(
+                                  color: const Color(0xfff9f9f9),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    _buildAmountInfo(
+                                      'Processing Fee (${momoTransferController.commissionModel.value!.remitCurrency})',
+                                      momoTransferController.commissionModel.value!.totalCharges!.toStringAsFixed(2),
+                                    ),
+                                    _buildAmountInfo(
+                                      'Net Amount (${momoTransferController.commissionModel.value!.remitCurrency})',
+                                      momoTransferController.commissionModel.value!.netAmount!.toStringAsFixed(2),
+                                    ),
+                                    _buildAmountInfo(
+                                      'Receivable Amount (${momoTransferController.commissionModel.value!.payoutCurrency})',
+                                      momoTransferController.commissionModel.value!.payoutCurrencyAmount!.toStringAsFixed(2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+
+                            SizedBox(height: 12,),
+                            Stack(
+                              children: [
+                                CustomTextField(
+                                  controller:
+                                      momoTransferController.accountDescriptionCtrl,
+                                  hintText: 'Account Descriptions',
+                                  labelText: 'Notes',
+                                  maxLine: 5,
+                                  minLine: 5,
+                                ),
+                                // Positioned(
+                                //   top: 16,
+                                //   left: 12,
+                                //   child: SvgPicture.asset(AssetUtilities.edit),
+                                // ),
+                              ],
                             ),
                           ],
                         ),
                       ),
-
-                    SizedBox(height: 12,),
-                    Stack(
-                      children: [
-                        CustomTextField(
-                          controller:
-                              momoTransferController.accountDescriptionCtrl,
-                          hintText: 'Account Descriptions',
-                          labelText: 'Notes',
-                          maxLine: 5,
-                          minLine: 5,
-                        ),
-                        // Positioned(
-                        //   top: 16,
-                        //   left: 12,
-                        //   child: SvgPicture.asset(AssetUtilities.edit),
-                        // ),
-                      ],
                     ),
                   ],
                 ),
@@ -262,35 +277,45 @@ class _MomoTransferScreenState extends State<MomoTransferScreen> {
                 momoTransferController.amountError.value = '';
 
                 bool hasError = false;
-                if (momoTransferController.selectedCountry.value == null) {
-                  momoTransferController.countryError.value = 'Country is required.';
+
+                if (momoTransferController.selectedBene.value==null) {
+                  momoTransferController.beneError.value = 'Please select and confirm a beneficiary.';
                   hasError = true;
                 }
-                if (momoTransferController.selectedBene.value == null) {
-                  momoTransferController.beneError.value = 'Beneficiary is required.';
-                  hasError = true;
-                }
-                if (momoTransferController.amountCtrl.text.trim().isEmpty) {
+                if (momoTransferController.isBeneficiaryConfirmed.value && momoTransferController.amountCtrl.text.trim().isEmpty) {
                   momoTransferController.amountError.value = 'Amount is required.';
                   hasError = true;
                 }
-                setState(() {
 
+                  var selectedCountryFromList = momoTransferController.countryCollectionList
+                      .where((country) => country.name == momoTransferController.selectedBene.value!.data!.recipientCountryName!)
+                      .firstOrNull;
+
+                  if (selectedCountryFromList != null) {
+                    momoTransferController.selectedCountry.value=selectedCountryFromList;
+                  }
+
+
+
+
+
+
+
+
+
+
+
+                setState(() {
                 });
                 if (hasError) return;
-
-
                 bool isVerified = await _showPasswordDialog();
                 if (!isVerified) return;
-
-                if(momoTransferController.isbtnClick.value)
+                if(momoTransferController.isbtnClick.value) {
                   return;
+                }
                 momoTransferController.isbtnClick.value=true;
                 momoTransferController.update();
                 await momoTransferController.getTMtoMStore();
-
-
-
               },
               backColor: VariableUtilities.theme.secondaryColor,
               isloaing:  momoTransferController.isbtnClick.value,

@@ -1,9 +1,9 @@
 import 'dart:async';
 import 'dart:convert';
 
-import 'package:fintech/features/authentication/repo/authentication_repo.dart';
-import 'package:fintech/features/profile/controller/profile_controller.dart';
-import 'package:fintech/features/splash/view/splash_screen.dart';
+import 'package:geopay/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/profile/controller/profile_controller.dart';
+import 'package:geopay/features/splash/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -51,6 +51,26 @@ class LoginController extends GetxController {
   RxBool isOccured = true.obs;
   AuthenticationRepo authenticationRepo = AuthenticationRepo();
   RxList<String> passwordErrors = <String>[].obs;
+
+  /// Counter for KYC dialog tracking
+  Future<void> saveKycDialogCount(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = '${email}_${password}_kyc_count';
+    int currentCount = prefs.getInt(key) ?? 0;
+    await prefs.setInt(key, currentCount + 1);
+  }
+
+  Future<int> getKycDialogCount(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = '${email}_${password}_kyc_count';
+    return prefs.getInt(key) ?? 0;
+  }
+
+  Future<void> clearKycDialogCount(String email, String password) async {
+    final prefs = await SharedPreferences.getInstance();
+    String key = '${email}_${password}_kyc_count';
+    await prefs.remove(key);
+  }
 
   void togglePasswordOccured() {
     isOccured.value = !isOccured.value;
@@ -116,52 +136,86 @@ class LoginController extends GetxController {
                       "reviewNeeded" ||
                   commonController.userModel.value!.metamapStatus ==
                       "verified")) {
-            Get.dialog(
+            
+            // Check login count for KYC dialog
+            int loginCount = await getKycDialogCount(
+                params['email'], 
+                params['password']
+            );
+            
+            // Save/increment the count
+            await saveKycDialogCount(
+                params['email'], 
+                params['password']
+            );
+            
+            if (loginCount == 0) {
+              // First time login - show first dialog
+              Get.dialog(
                 barrierDismissible: false,
                 ResultDialog(
-                  title: "Thank You For Meta KYC",
-                  positiveButtonText: "Close",
-                  showCloseButton: false,
-                  onPositveTap: () {
-                    SharedPref.setUserToken('');
-                    Get.offAllNamed(
-                      RouteUtilities.loginScreen,
-                    );
-                  },
-                  descriptionWidget: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text("You’re documents are still under review, If you think the process is taking longer than expected, please reach out to us on the following:",
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700
-                        ),),
-
-                      SizedBox(height: 10,),
-                      GestureDetector(
-                        child: Text("Email : support@geopayments.co",
+                    title: "KYC Processing",
+                    positiveButtonText: "Close",
+                    showCloseButton: false,
+                    onPositveTap: () {
+                      SharedPref.setUserToken('');
+                      Get.offAllNamed(
+                        RouteUtilities.loginScreen,
+                      );
+                    },
+                    description:
+                        'Your documents are under review to ensure they meet our verification requirements. we will notify you once the process is completed'),
+              );
+            } else
+            {
+              // Second time and onwards - show detailed dialog
+              Get.dialog(
+                  barrierDismissible: false,
+                  ResultDialog(
+                    title: "Thank You For Meta KYC",
+                    positiveButtonText: "Close",
+                    showCloseButton: false,
+                    onPositveTap: () {
+                      SharedPref.setUserToken('');
+                      Get.offAllNamed(
+                        RouteUtilities.loginScreen,
+                      );
+                    },
+                    descriptionWidget: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("You're documents are still under review, If you think the process is taking longer than expected, please reach out to us on the following:",
                           style: TextStyle(
                               fontSize: 14,
                               color: Colors.white,
                               fontWeight: FontWeight.w700
                           ),),
-                      ),
-                      SizedBox(height: 10,),
-                      GestureDetector(
-                        child: Text("What\'s app support only:",
-                          style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.white,
-                              fontWeight: FontWeight.w700
-                          ),),
-                      ),
+
+                        SizedBox(height: 10,),
+                        GestureDetector(
+                          child: Text("Email : support@geopayments.co",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700
+                            ),),
+                        ),
+                        SizedBox(height: 10,),
+                        GestureDetector(
+                          child: Text("What\'s app support only:",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700
+                            ),),
+                        ),
 
 
-                    ],
-                  ), description: '',
-                ));
+                      ],
+                    ), description: '',
+                  ));
+            }
           } else if (commonController.userModel.value!.isKycVerify == 0 &&
               !(commonController.userModel.value!.metamapStatus ==
                       "reviewNeeded" ||
@@ -183,21 +237,84 @@ class LoginController extends GetxController {
           } else if (commonController.userModel.value!.isKycVerify == 0 &&
               commonController.userModel.value!.isUploadDocument == 1) {
             ProfileController profileController = Get.find();
-            Get.dialog(
-              barrierDismissible: false,
-              ResultDialog(
-                  title: "KYC Processing",
-                  positiveButtonText: "Close",
-                  showCloseButton: false,
-                  onPositveTap: () {
-                    SharedPref.setUserToken('');
-                    Get.offAllNamed(
-                      RouteUtilities.loginScreen,
-                    );
-                  },
-                  description:
-                      'Your documents are under review to ensure they meet our verification requirements. we will notify you once the process is completed'),
+            int loginCount = await getKycDialogCount(
+                params['email'],
+                params['password']
             );
+
+            // Save/increment the count
+            await saveKycDialogCount(
+                params['email'],
+                params['password']
+            );
+
+            if (loginCount == 0) {
+              // First time login - show first dialog
+              Get.dialog(
+                barrierDismissible: false,
+                ResultDialog(
+                    title: "KYC Processing",
+                    positiveButtonText: "Close",
+                    showCloseButton: false,
+                    onPositveTap: () {
+                      SharedPref.setUserToken('');
+                      Get.offAllNamed(
+                        RouteUtilities.loginScreen,
+                      );
+                    },
+                    description:
+                    'Your documents are under review to ensure they meet our verification requirements. we will notify you once the process is completed'),
+              );
+            } else
+            {
+              // Second time and onwards - show detailed dialog
+              Get.dialog(
+                  barrierDismissible: false,
+                  ResultDialog(
+                    title: "Thank You For Meta KYC",
+                    positiveButtonText: "Close",
+                    showCloseButton: false,
+                    onPositveTap: () {
+                      SharedPref.setUserToken('');
+                      Get.offAllNamed(
+                        RouteUtilities.loginScreen,
+                      );
+                    },
+                    descriptionWidget: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text("You're documents are still under review, If you think the process is taking longer than expected, please reach out to us on the following:",
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              fontWeight: FontWeight.w700
+                          ),),
+
+                        SizedBox(height: 10,),
+                        GestureDetector(
+                          child: Text("Email : support@geopayments.co",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700
+                            ),),
+                        ),
+                        SizedBox(height: 10,),
+                        GestureDetector(
+                          child: Text("What\'s app support only:",
+                            style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700
+                            ),),
+                        ),
+
+
+                      ],
+                    ), description: '',
+                  ));
+            }
           } else {
             getCommonData();
             Get.offAllNamed(

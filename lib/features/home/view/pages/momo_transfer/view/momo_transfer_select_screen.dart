@@ -1,6 +1,6 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/controller/momo_transfer_controller.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/controller/momo_transfer_controller.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -26,6 +26,7 @@ class _MomoTransferSelectScreenState extends State<MomoTransferSelectScreen> {
     // TODO: implement initState
     super.initState();
     momoTransferController.getCountryList();
+    momoTransferController.getTMtoMBeneListStore();
   }
   @override
   void dispose() {
@@ -81,6 +82,7 @@ class _MomoTransferSelectScreenState extends State<MomoTransferSelectScreen> {
                                         momoTransferController
                                             .selectedCountry.value).then((value) {
                                       momoTransferController.getCountryList();
+                                      momoTransferController.getTMtoMBeneListStore();
                                             },);
                                     EasyLoading.dismiss();
                                     setState(() {});
@@ -189,7 +191,13 @@ class _MomoTransferSelectScreenState extends State<MomoTransferSelectScreen> {
                     ),
                     const SizedBox(height: 20,),
                     Obx(() {
-                      return momoTransferController.mobileBeneficiaryRecentList.isEmpty?Container():Container(
+                      return momoTransferController.mobileBeneficiaryRecentList.isEmpty?Container(
+                        child: const Text("No Recent Recipient",style: TextStyle(
+                          fontSize: 15,
+
+                        ),),
+
+                      ):Container(
 
                         decoration: BoxDecoration(
                             color: Colors.white,

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -106,9 +107,11 @@ class _QRScanScreenState extends State<QRScanScreen> {
     hasScanned = false;
     controller?.resumeCamera();
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text(message)),
+    DialogUtilities.showDialog(
+      title: "Error",
+      message:    message!,
     );
+
   }
 
   @override

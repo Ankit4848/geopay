@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/dashboard/data/dashboard_data.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/dashboard/data/dashboard_data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';

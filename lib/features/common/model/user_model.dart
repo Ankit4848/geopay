@@ -47,6 +47,8 @@ class UserModel {
     required this.defaultCurrency,
     required this.companyDetail,
     required this.userKyc,
+    required this.cardCommissionCharge,
+    required this.cardCommissionType,
   });
 
   final int? id;
@@ -94,6 +96,8 @@ class UserModel {
   final bool? metamap;
   final String? metamapStatus;
   final String? defaultCurrency;
+  final String? cardCommissionType;
+  final String? cardCommissionCharge;
   final CompanyDetail? companyDetail;
   final dynamic userKyc;
 
@@ -143,6 +147,8 @@ class UserModel {
       token: json["token"],
       metamap: json["metamap"],
       metamapStatus: json["metamap_status"],
+      cardCommissionType: json["card_commission_type"],
+      cardCommissionCharge: json["card_commission_charge"],
       defaultCurrency: json["default_currency"],
       companyDetail: json["company_detail"] == null
           ? null
@@ -195,6 +201,8 @@ class UserModel {
         "is_merchant": isMerchant,
         "token": token,
         "metamap": metamap,
+        "card_commission_type": cardCommissionType,
+        "card_commission_charge": cardCommissionCharge,
         "metamap_status": metamapStatus,
         "default_currency": defaultCurrency,
         "company_detail": companyDetail?.toJson(),

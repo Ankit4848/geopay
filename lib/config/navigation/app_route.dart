@@ -1,25 +1,26 @@
-import 'package:fintech/features/authentication/pages/forgot_password/view/create_password.dart';
-import 'package:fintech/features/authentication/pages/forgot_password/view/forgot_password_screen.dart';
-import 'package:fintech/features/authentication/pages/login/view/login_screen.dart';
-import 'package:fintech/features/authentication/pages/login/view/login_with_biometric_screen.dart';
-import 'package:fintech/features/authentication/pages/login/view/otp_verification.dart';
-import 'package:fintech/features/authentication/pages/register/view/register_screen.dart';
-import 'package:fintech/features/dashboard/view/dashboard.dart';
-import 'package:fintech/features/home/view/pages/add_money/view/add_money_screen.dart';
-import 'package:fintech/features/home/view/pages/airtime/view/airtime_screen.dart';
-import 'package:fintech/features/home/view/pages/airtime/view/select_operator_screen.dart';
-import 'package:fintech/features/home/view/pages/airtime/view/select_recharge_plan_screen.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/view/bank_transfer_screen.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/view/momo_transfer_screen.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/view/pay_to_walllet_screen.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/view/pay_without_qr_screen.dart';
-import 'package:fintech/features/home/view/pages/scan_me/view/qr_screen.dart';
-import 'package:fintech/features/kyc/view/kyc_screen.dart';
-import 'package:fintech/features/profile/view/about_us_screen.dart';
-import 'package:fintech/features/profile/view/change_password_screen.dart';
-import 'package:fintech/features/profile/view/contact_us_screen.dart';
-import 'package:fintech/features/profile/view/edit_profile_screen.dart';
-import 'package:fintech/features/profile/view/faq_screen.dart';
+import 'package:geopay/features/authentication/pages/forgot_password/view/create_password.dart';
+import 'package:geopay/features/authentication/pages/forgot_password/view/forgot_password_screen.dart';
+import 'package:geopay/features/authentication/pages/login/view/login_screen.dart';
+import 'package:geopay/features/authentication/pages/login/view/login_with_biometric_screen.dart';
+import 'package:geopay/features/authentication/pages/login/view/otp_verification.dart';
+import 'package:geopay/features/authentication/pages/register/view/register_screen.dart';
+import 'package:geopay/features/dashboard/view/dashboard.dart';
+import 'package:geopay/features/home/view/pages/add_money/view/add_money_screen.dart';
+import 'package:geopay/features/home/view/pages/airtime/view/airtime_screen.dart';
+import 'package:geopay/features/home/view/pages/airtime/view/select_operator_screen.dart';
+import 'package:geopay/features/home/view/pages/airtime/view/select_recharge_plan_screen.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/view/bank_transfer_screen.dart';
+import 'package:geopay/features/home/view/pages/deposite_payment/view/deposit_payment_screen.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/view/momo_transfer_screen.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/view/pay_to_walllet_screen.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/view/pay_without_qr_screen.dart';
+import 'package:geopay/features/home/view/pages/scan_me/view/qr_screen.dart';
+import 'package:geopay/features/kyc/view/kyc_screen.dart';
+import 'package:geopay/features/profile/view/about_us_screen.dart';
+import 'package:geopay/features/profile/view/change_password_screen.dart';
+import 'package:geopay/features/profile/view/contact_us_screen.dart';
+import 'package:geopay/features/profile/view/edit_profile_screen.dart';
+import 'package:geopay/features/profile/view/faq_screen.dart';
 import 'package:flutter/material.dart';
 
 import '../../features/home/view/pages/airtime/view/recharge_invoice_screen.dart';
@@ -79,6 +80,7 @@ class RouteUtilities {
   static const String contactUsScreen = '/contactUsScreen';
   static const String faqScreen = '/faqScreen';
   static const String profileScreen = '/profileScreen';
+  static const String depositPaymentScreen = '/depositPaymentScreen';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     String routeName = settings.name ?? RouteUtilities.root;
@@ -154,6 +156,12 @@ class RouteUtilities {
               const AddMoneyScreen(),
           transitionsBuilder: transitionsBuilder,
         );
+      case RouteUtilities.depositPaymentScreen:
+        return PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) =>
+              const DepositPaymentScreen(),
+          transitionsBuilder: transitionsBuilder,
+        );
       case RouteUtilities.payToWalletScreen:
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
@@ -196,14 +204,12 @@ class RouteUtilities {
                const BasicInfoScreen(),
           transitionsBuilder: transitionsBuilder,
         );
-
       case RouteUtilities.bankTransferselect:
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
               const BankTransferSelectScreen(),
           transitionsBuilder: transitionsBuilder,
         );
-
       case RouteUtilities.airtimeScreen:
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>

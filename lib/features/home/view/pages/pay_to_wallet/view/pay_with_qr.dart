@@ -1,12 +1,12 @@
-import 'package:fintech/core/app_assets/asset_images.dart';
-import 'package:fintech/core/settings/variable_utilities.dart';
-import 'package:fintech/core/widgets/appbar/custom_appbar.dart';
-import 'package:fintech/core/widgets/buttons/custom_flat_button.dart';
-import 'package:fintech/core/widgets/input_fields/custom_textfield.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/view/pages/add_money/widgets/balance_card.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
-import 'package:fintech/features/home/widgets/country_dialog.dart';
+import 'package:geopay/core/app_assets/asset_images.dart';
+import 'package:geopay/core/settings/variable_utilities.dart';
+import 'package:geopay/core/widgets/appbar/custom_appbar.dart';
+import 'package:geopay/core/widgets/buttons/custom_flat_button.dart';
+import 'package:geopay/core/widgets/input_fields/custom_textfield.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/view/pages/add_money/widgets/balance_card.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
+import 'package:geopay/features/home/widgets/country_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -69,10 +69,10 @@ class _PayWithQrScreenState extends State<PayWithQrScreen> {
                       () => CustomTextField(
                         hintText:
                             payToWalletController.selectedCountry.value == null
-                                ? "Select Country"
+                                ? "Select Payer Country"
                                 : payToWalletController
                                         .selectedCountry.value!.name ??
-                                    'Select Country',
+                                    'Select Payer Country',
 
                         onTap: () {
                           /*  showDialog(
@@ -97,7 +97,12 @@ class _PayWithQrScreenState extends State<PayWithQrScreen> {
                             },
                           );*/
                         },
-                        labelText: 'Country *',
+                        labelText: 'Payer Country *',
+                        hintStyle: FontUtilities.style(
+                          fontSize: 13,
+                          fontWeight: FWT.regular,
+                          fontColor: VariableUtilities.theme.blackColor,
+                        ),
                         suffixIcon: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 12.0),
                           child: SvgPicture.asset(AssetUtilities.dropDown),
@@ -124,16 +129,21 @@ class _PayWithQrScreenState extends State<PayWithQrScreen> {
                     Obx(() => CustomTextField(
                           controller: payToWalletController.mobileCtrl,
                           onTap: () {},
-                          suffixIcon: Padding(
+                         /* suffixIcon: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
                             child: SvgPicture.asset(AssetUtilities.phoneBook),
-                          ),
+                          ),*/
                           textInputType: TextInputType.phone,
                           inputFormatters: [
                             FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d*')),
                           ],
                           hintText: 'Mobile No.',
+                      hintStyle: FontUtilities.style(
+                        fontSize: 13,
+                        fontWeight: FWT.regular,
+                        fontColor: VariableUtilities.theme.blackColor,
+                      ),
                           errorWidget:
                               payToWalletController.mobileError.value != ""
                                   ? Text(

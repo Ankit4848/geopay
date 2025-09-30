@@ -2,9 +2,9 @@ import 'dart:io';
 
 import 'package:bounce/bounce.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
-import 'package:fintech/features/kyc/controller/kyc_controller.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
+import 'package:geopay/features/kyc/controller/kyc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -26,29 +26,42 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
   List<PlatformFile> pickedFiles = [];
 
   Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-      allowMultiple: true,
-    );
+    try {
+      // Use one-time access approach with FilePicker
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+        allowMultiple: true,
+        // Use the system's file picker which doesn't require persistent permissions
+        withData: false, // Don't load file data in memory
+        withReadStream: true, // Use file streams for better memory management
+      );
 
-    if (result != null) {
-      setState(() {
-        pickedFiles = result.files;
+      if (result != null) {
+        setState(() {
+          pickedFiles = result.files;
 
-        if (registerController.selectedDirector != null &&
-            registerController.selectedDocument != null) {
-          String directorName = registerController.selectedDirector!.name!;
-          String documentName = registerController.selectedDocument!.label!;
+          if (registerController.selectedDirector != null &&
+              registerController.selectedDocument != null) {
+            String directorName = registerController.selectedDirector!.name!;
+            String documentName = registerController.selectedDocument!.label!;
 
-          registerController.uploadedFiles.putIfAbsent(directorName, () => {});
-          registerController.uploadedFiles[directorName]!
-              .putIfAbsent(documentName, () => []);
+            registerController.uploadedFiles.putIfAbsent(
+              directorName,
+              () => {},
+            );
+            registerController.uploadedFiles[directorName]!.putIfAbsent(
+              documentName,
+              () => [],
+            );
 
-          registerController.uploadedFiles[directorName]![documentName] =
-              List.from(pickedFiles);
-        }
-      });
+            registerController.uploadedFiles[directorName]![documentName] =
+                List.from(pickedFiles);
+          }
+        });
+      }
+    } catch (e) {
+      print("Error picking files: $e");
     }
   }
 
@@ -68,7 +81,8 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
         separatorBuilder: (_, __) => SizedBox(width: 12),
         itemBuilder: (context, index) {
           final file = pickedFiles[index];
-          final isImage = file.extension == 'jpg' ||
+          final isImage =
+              file.extension == 'jpg' ||
               file.extension == 'jpeg' ||
               file.extension == 'png';
 
@@ -80,9 +94,10 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                   width: 120,
                   height: 160,
                   color: Colors.grey.shade200,
-                  child: isImage && file.path != null
-                      ? Image.file(File(file.path!), fit: BoxFit.cover)
-                      : Center(child: Text("No preview")),
+                  child:
+                      isImage && file.path != null
+                          ? Image.file(File(file.path!), fit: BoxFit.cover)
+                          : Center(child: Text("No preview")),
                 ),
               ),
               Positioned(
@@ -94,12 +109,12 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                       icon: Icons.edit,
                       color: Colors.blue,
                       onTap: () async {
-                        FilePickerResult? result =
-                            await FilePicker.platform.pickFiles(
-                          type: FileType.custom,
-                          allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-                          allowMultiple: false,
-                        );
+                        FilePickerResult? result = await FilePicker.platform
+                            .pickFiles(
+                              type: FileType.custom,
+                              allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+                              allowMultiple: false,
+                            );
                         if (result != null && result.files.isNotEmpty) {
                           setState(() {
                             pickedFiles[index] = result.files.first;
@@ -119,13 +134,17 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                               registerController.selectedDirector != null &&
                               registerController.selectedDocument != null) {
                             registerController.documentStatus[registerController
-                                    .selectedDirector!.name!]![
-                                registerController
-                                    .selectedDocument!.label!] = 'Pending';
+                                    .selectedDirector!
+                                    .name!]![registerController
+                                    .selectedDocument!
+                                    .label!] =
+                                'Pending';
                             registerController.uploadedFiles[registerController
-                                    .selectedDirector!.name!]![
-                                registerController
-                                    .selectedDocument!.label!] = [];
+                                    .selectedDirector!
+                                    .name!]![registerController
+                                    .selectedDocument!
+                                    .label!] =
+                                [];
                           }
                         });
                       },
@@ -166,34 +185,57 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
 
     for (var doc
         in registerController.companyDisplayDataModel!.value!.documentTypes!) {
-      if (registerController.companyDisplayDataModel!.value!.companyDetail!
+      if (registerController
+                  .companyDisplayDataModel!
+                  .value!
+                  .companyDetail!
                   .companyDocuments !=
               null &&
-          registerController.companyDisplayDataModel!.value!.companyDetail!
-              .companyDocuments!.isNotEmpty) {
+          registerController
+              .companyDisplayDataModel!
+              .value!
+              .companyDetail!
+              .companyDocuments!
+              .isNotEmpty) {
         final director = registerController
-            .companyDisplayDataModel!.value!.companyDetail!.companyDocuments!
-            .firstWhere((e) =>
-                e.documentTypeId == doc.id &&
-                registerController.selectedDirector!.id == e.companyDirectorId);
+            .companyDisplayDataModel!
+            .value!
+            .companyDetail!
+            .companyDocuments!
+            .firstWhere(
+              (e) =>
+                  e.documentTypeId == doc.id &&
+                  registerController.selectedDirector!.id ==
+                      e.companyDirectorId,
+            );
 
         print(director.status);
         print(director.status);
         if (director.status == 2) {
-          registerController.documentStatus[directorName]!
-              .putIfAbsent(doc.label!, () => 'Reject');
-          registerController.documentStatus[directorName]!
-              .putIfAbsent("reaseon_${doc.label!}", () => director.reason!);
+          registerController.documentStatus[directorName]!.putIfAbsent(
+            doc.label!,
+            () => 'Reject',
+          );
+          registerController.documentStatus[directorName]!.putIfAbsent(
+            "reaseon_${doc.label!}",
+            () => director.reason!,
+          );
         } else if (director.status == 1) {
-          registerController.documentStatus[directorName]!
-              .putIfAbsent(doc.label!, () => 'Done');
+          registerController.documentStatus[directorName]!.putIfAbsent(
+            doc.label!,
+            () => 'Done',
+          );
         } else if (director.status == 0) {
-          registerController.documentStatus[directorName]!
-              .putIfAbsent(doc.label!, () => 'Done');
+          registerController.documentStatus[directorName]!.putIfAbsent(
+            doc.label!,
+            () => 'Done',
+          );
         }
       } else {
-        registerController.documentStatus[directorName]!
-            .putIfAbsent(doc.label!, () => 'Pending');
+        registerController.documentStatus[directorName]!.putIfAbsent(
+          doc.label!,
+          () => 'Pending',
+        );
       }
     }
 
@@ -203,56 +245,63 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
         padding: const EdgeInsets.all(8.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: registerController
-              .companyDisplayDataModel!.value!.documentTypes!
-              .map((entry) {
-            final docLabel = entry.label!;
-            final reson = registerController
-                    .documentStatus[directorName]!["reaseon_${docLabel!}"] ??
-                '';
-            final status =
-                registerController.documentStatus[directorName]![docLabel] ??
+          children:
+              registerController.companyDisplayDataModel!.value!.documentTypes!.map((
+                entry,
+              ) {
+                final docLabel = entry.label!;
+                final reson =
+                    registerController
+                        .documentStatus[directorName]!["reaseon_${docLabel!}"] ??
+                    '';
+                final status =
+                    registerController
+                        .documentStatus[directorName]![docLabel] ??
                     'Pending';
-            final isUploaded = status == 'Done';
+                final isUploaded = status == 'Done';
 
-            return ListTile(
-              leading: Icon(
-                isUploaded ? Icons.check_circle : Icons.cancel,
-                color: isUploaded ? Colors.green : Colors.red,
-              ),
-              title: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(docLabel, style: TextStyle(fontSize: 13)),
-                  Text(
-                    "$reson",
-                    style: TextStyle(fontSize: 12, color: Colors.red),
+                return ListTile(
+                  leading: Icon(
+                    isUploaded ? Icons.check_circle : Icons.cancel,
+                    color: isUploaded ? Colors.green : Colors.red,
                   ),
-                ],
-              ),
-              trailing: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  if (isUploaded && reson != "")
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Colors.blue),
-                      onPressed: () {
-                        setState(() {
-                          registerController.selectedDocument =
-                              registerController.companyDisplayDataModel!.value!
+                  title: Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(docLabel, style: TextStyle(fontSize: 13)),
+                      Text(
+                        "$reson",
+                        style: TextStyle(fontSize: 12, color: Colors.red),
+                      ),
+                    ],
+                  ),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      if (isUploaded && reson != "")
+                        IconButton(
+                          icon: Icon(Icons.edit, color: Colors.blue),
+                          onPressed: () {
+                            setState(() {
+                              registerController
+                                  .selectedDocument = registerController
+                                  .companyDisplayDataModel!
+                                  .value!
                                   .documentTypes!
                                   .firstWhere((doc) => doc.label == docLabel);
-                          pickedFiles = List.from(registerController
-                                  .uploadedFiles[directorName]?[docLabel] ??
-                              []);
-                        });
-                      },
-                    ),
-                ],
-              ),
-            );
-          }).toList(),
+                              pickedFiles = List.from(
+                                registerController
+                                        .uploadedFiles[directorName]?[docLabel] ??
+                                    [],
+                              );
+                            });
+                          },
+                        ),
+                    ],
+                  ),
+                );
+              }).toList(),
         ),
       ),
     );
@@ -266,54 +315,72 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
 
     return registerController.companyDisplayDataModel!.value!.documentTypes!
         .where((doc) {
-      final docLabel = doc.label!;
+          final docLabel = doc.label!;
 
-      var status = 'Pending';
-      if (registerController.companyDisplayDataModel!.value!.companyDetail!
-                  .companyDocuments !=
-              null &&
-          registerController.companyDisplayDataModel!.value!.companyDetail!
-              .companyDocuments!.isNotEmpty) {
-        final director = registerController
-            .companyDisplayDataModel!.value!.companyDetail!.companyDocuments!
-            .firstWhere((e) {
-          return e.documentTypeId == doc.id &&
-              registerController.selectedDirector!.id == e.companyDirectorId;
-        });
+          var status = 'Pending';
+          if (registerController
+                      .companyDisplayDataModel!
+                      .value!
+                      .companyDetail!
+                      .companyDocuments !=
+                  null &&
+              registerController
+                  .companyDisplayDataModel!
+                  .value!
+                  .companyDetail!
+                  .companyDocuments!
+                  .isNotEmpty) {
+            final director = registerController
+                .companyDisplayDataModel!
+                .value!
+                .companyDetail!
+                .companyDocuments!
+                .firstWhere((e) {
+                  return e.documentTypeId == doc.id &&
+                      registerController.selectedDirector!.id ==
+                          e.companyDirectorId;
+                });
 
-        print(director.status);
+            print(director.status);
 
-        if (director.status == 2) {
-          status = (registerController.documentStatus[
-                              registerController.selectedDirector!.name!]
-                          ?[registerController.selectedDocument?.label] ??
-                      '') ==
-                  'Done'
-              ? 'Done'
-              : 'Reject';
-        } else if (director.status == 1) {
-          status = 'Done';
-        } else if (director.status == 0) {
-          status = registerController.documentStatus[directorName]![docLabel] ??
-              'Done';
-        }
+            if (director.status == 2) {
+              status =
+                  (registerController.documentStatus[registerController
+                                  .selectedDirector!
+                                  .name!]?[registerController
+                                  .selectedDocument
+                                  ?.label] ??
+                              '') ==
+                          'Done'
+                      ? 'Done'
+                      : 'Reject';
+            } else if (director.status == 1) {
+              status = 'Done';
+            } else if (director.status == 0) {
+              status =
+                  registerController.documentStatus[directorName]![docLabel] ??
+                  'Done';
+            }
 
-        print(status);
-      } else {
-        status = registerController.documentStatus[directorName]![docLabel] ??
-            'Pending';
-      }
+            print(status);
+          } else {
+            status =
+                registerController.documentStatus[directorName]![docLabel] ??
+                'Pending';
+          }
 
-      // Show document if it's not uploaded yet or is currently selected
-      return status != 'Done' ||
-          registerController.selectedDocument?.label == docLabel;
-    }).toList();
+          // Show document if it's not uploaded yet or is currently selected
+          return status != 'Done' ||
+              registerController.selectedDocument?.label == docLabel;
+        })
+        .toList();
   }
 
   @override
   Widget build(BuildContext context) {
     print(
-        "registerController.companyDisplayDataModel!.value!.companyDetail!.companyDirectors!.length");
+      "registerController.companyDisplayDataModel!.value!.companyDetail!.companyDirectors!.length",
+    );
     print(registerController.selectedDocument);
 
     return SingleChildScrollView(
@@ -321,17 +388,22 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          if (registerController.companyDisplayDataModel!.value!.companyDetail!
-                  .companyDirectors!.length ==
+          if (registerController
+                  .companyDisplayDataModel!
+                  .value!
+                  .companyDetail!
+                  .companyDirectors!
+                  .length ==
               1)
             CustomTextField(
               labelText: 'Director Name*',
-              errorWidget: kycController.fieldErrors['account_number'] != null
-                  ? Text(
-                      kycController.fieldErrors['account_number']!,
-                      style: const TextStyle(color: Colors.red, fontSize: 12),
-                    )
-                  : Container(),
+              errorWidget:
+                  kycController.fieldErrors['account_number'] != null
+                      ? Text(
+                        kycController.fieldErrors['account_number']!,
+                        style: const TextStyle(color: Colors.red, fontSize: 12),
+                      )
+                      : Container(),
               onTap: () {},
               controller: registerController.directerctrl,
               textInputType: TextInputType.number,
@@ -348,15 +420,25 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                 return null;
               },
             ),
-          if (registerController.companyDisplayDataModel!.value!.companyDetail!
-                  .companyDirectors!.length >
+          if (registerController
+                  .companyDisplayDataModel!
+                  .value!
+                  .companyDetail!
+                  .companyDirectors!
+                  .length >
               1)
             DropdownButtonFormField<CompanyDirectors>(
               value: registerController.selectedDirector,
-              items: registerController.companyDisplayDataModel!.value!
-                  .companyDetail!.companyDirectors!
-                  .map((e) => DropdownMenuItem(value: e, child: Text(e.name!)))
-                  .toList(),
+              items:
+                  registerController
+                      .companyDisplayDataModel!
+                      .value!
+                      .companyDetail!
+                      .companyDirectors!
+                      .map(
+                        (e) => DropdownMenuItem(value: e, child: Text(e.name!)),
+                      )
+                      .toList(),
               onChanged: (value) {
                 setState(() {
                   registerController.selectedDirector = value;
@@ -377,13 +459,17 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
             value: registerController.selectedDocument,
             isDense: true,
             isExpanded: true,
-            items: getAvailableDocuments()
-                .map((e) => DropdownMenuItem(value: e, child: Text(e.label!)))
-                .toList(),
-            onChanged: (value) => setState(() {
-              registerController.selectedDocument = value;
-              pickedFiles.clear();
-            }),
+            items:
+                getAvailableDocuments()
+                    .map(
+                      (e) => DropdownMenuItem(value: e, child: Text(e.label!)),
+                    )
+                    .toList(),
+            onChanged:
+                (value) => setState(() {
+                  registerController.selectedDocument = value;
+                  pickedFiles.clear();
+                }),
             decoration: InputDecoration(labelText: 'Document *'),
           ),
           SizedBox(height: 20),
@@ -398,7 +484,9 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                       borderRadius: BorderRadius.circular(15),
                       color: Colors.white,
                       border: Border.all(
-                          color: Colors.black, style: BorderStyle.solid),
+                        color: Colors.black,
+                        style: BorderStyle.solid,
+                      ),
                     ),
                     child: Column(
                       children: [
@@ -417,9 +505,10 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                         const Text(
                           "Click Here to upload your file",
                           style: TextStyle(
-                              color: Colors.black,
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12),
+                            color: Colors.black,
+                            fontWeight: FontWeight.bold,
+                            fontSize: 12,
+                          ),
                         ),
                         const SizedBox(height: 3),
                         const Text(
@@ -462,9 +551,11 @@ class _UploadDetailsScreenState extends State<UploadDetailsScreen> {
                 }
               },
               child: Text(
-                (registerController.documentStatus[
-                                    registerController.selectedDirector!.name!]
-                                ?[registerController.selectedDocument?.label] ??
+                (registerController.documentStatus[registerController
+                                .selectedDirector!
+                                .name!]?[registerController
+                                .selectedDocument
+                                ?.label] ??
                             '') ==
                         'Done'
                     ? 'Update'

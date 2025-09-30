@@ -1,6 +1,6 @@
-import 'package:fintech/features/common/repo/common_repo.dart';
-import 'package:fintech/features/notification_history/model/NotificationModel.dart';
-import 'package:fintech/features/transaction_history/model/TranscationModel.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
+import 'package:geopay/features/notification_history/model/NotificationModel.dart';
+import 'package:geopay/features/transaction_history/model/TranscationModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';

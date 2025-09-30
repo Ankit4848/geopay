@@ -1,6 +1,6 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/register_company_form.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/register_individual_form.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/register_company_form.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/register_individual_form.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -138,54 +138,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                             // registerController.isPhoneVerify.value=true;
                                             //  registerController.isEmailVerify.value=true;
 
-                                            if (!registerController
+                                           if (!registerController
+                                              .isEmailVerify.value) {
+
+                                            DialogUtilities.showDialog(
+                                              title: "Error",
+                                              message:  "Please Verify Your email",
+                                            );
+
+
+
+                                          }else if (!registerController
                                                 .isPhoneVerify.value) {
 
-
-
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content:  Text(
-                                                    "Please Verify Your Phone",
-                                                    style: const TextStyle(color: Colors.white), // white font
-                                                  ),
-                                                  backgroundColor: Colors.red, // red background
-                                                  duration: const Duration(seconds: 5), // show for 3 seconds
-                                                  behavior: SnackBarBehavior.floating, // optional: floating snackbar
-                                                ),
+                                              DialogUtilities.showDialog(
+                                                title: "Error",
+                                                message:  "Please Verify Your Phone",
                                               );
-
-
-
-
-
-
-
-
-
-
-
-
-                                            } else if (!registerController
-                                                .isEmailVerify.value) {
-
-
-
-
-                                              ScaffoldMessenger.of(context).showSnackBar(
-                                                SnackBar(
-                                                  content:  Text(
-                                                    "Please Verify Your email",
-                                                    style: const TextStyle(color: Colors.white), // white font
-                                                  ),
-                                                  backgroundColor: Colors.red, // red background
-                                                  duration: const Duration(seconds: 5), // show for 3 seconds
-                                                  behavior: SnackBarBehavior.floating, // optional: floating snackbar
-                                                ),
-                                              );
-
-
-
 
                                             } else {
                                               registerController
@@ -216,6 +185,37 @@ class _RegisterScreenState extends State<RegisterScreen> {
                                 ),
                               ),
                             ),
+                            const SizedBox(height: 20),
+                            Center(
+                              child: RichText(
+                                text: TextSpan(
+                                    text: "You have an already account? ",
+                                    style: FontUtilities.style(
+                                        fontSize: 12,
+                                        fontWeight: FWT.semiBold),
+                                    children: [
+                                      TextSpan(
+                                        text: "SignIn",
+                                        recognizer: TapGestureRecognizer()
+                                          ..onTap = () {
+                                            Get.back();
+                                          },
+                                        style: FontUtilities.style(
+                                            fontSize: 12,
+                                            decoration: TextDecoration
+                                                .underline,
+                                            fontColor: VariableUtilities
+                                                .theme.secondaryColor,
+                                            fontWeight: FWT.bold)
+                                            .copyWith(
+                                            decorationColor:
+                                            VariableUtilities.theme
+                                                .secondaryColor),
+                                      )
+                                    ]),
+                              ),
+                            ),
+                            const SizedBox(height: 20),
                           ],
                         ),
                       ),

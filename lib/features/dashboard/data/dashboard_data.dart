@@ -1,4 +1,4 @@
-import 'package:fintech/core/app_assets/asset_images.dart';
+import 'package:geopay/core/app_assets/asset_images.dart';
 
 class DashboardData {
   static List<String> bottomOption = [

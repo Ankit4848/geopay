@@ -1,16 +1,16 @@
 import 'dart:convert';
 
 import 'package:either_dart/either.dart';
-import 'package:fintech/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
-import 'package:fintech/features/common/model/country_model.dart';
-import 'package:fintech/features/home/model/CommonModel.dart';
-import 'package:fintech/features/home/view/pages/add_money/widgets/balance_card.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBankModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
-import 'package:fintech/features/notification_history/model/NotificationModel.dart';
-import 'package:fintech/features/transaction_history/model/TranscationModel.dart';
+import 'package:geopay/features/authentication/pages/register/model/CompanyDisplayDataModel.dart';
+import 'package:geopay/features/common/model/country_model.dart';
+import 'package:geopay/features/home/model/CommonModel.dart';
+import 'package:geopay/features/home/view/pages/add_money/widgets/balance_card.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBankModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
+import 'package:geopay/features/notification_history/model/NotificationModel.dart';
+import 'package:geopay/features/transaction_history/model/TranscationModel.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/config.dart';
@@ -83,16 +83,16 @@ class CommonRepo {
 
   Future<CommissionModel?> getCommissionData(
       BuildContext context, Map<String, dynamic> params) async {
-    try {
+  //  try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost, body: params, url: APIUtilities.getCommission);
       if (response.isRight) {
         final countryList = json.decode(response.right);
         return CommissionModel.fromJson(countryList);
       }
-    } catch (e) {
+   /* } catch (e) {
       print("Error :: ${e}");
-    }
+    }*/
     return null;
   }
 
@@ -102,7 +102,7 @@ class CommonRepo {
       Either<Exception, dynamic> response = await API.callAPI2(context,
           type: APIType.tPost,
           body: params,
-          showSuccessMessage: true,
+          showSuccessMessage: false,
           url: APIUtilities.getCommissionStore);
 
       if (response.isRight) {
@@ -110,7 +110,7 @@ class CommonRepo {
         print(response.right);
 
         final data = response.right;
-        return ApiResponse(success: data['success'] ?? true, data: data);
+        return ApiResponse(success: data['success'] ?? true,message:  data['message'], data: data);
         //return UserModel.fromJson(jsonDecode(response.right));
       }
     } catch (e) {
@@ -118,6 +118,8 @@ class CommonRepo {
     }
     return null;
   }
+
+
   Future<ApiResponse?> getCompanyKycStep1(
       BuildContext context, Map<String, dynamic> params) async {
    // try {
@@ -239,7 +241,7 @@ class CommonRepo {
     Either<Exception, dynamic> response = await API.callAPI2(context,
         type: APIType.tPost,
         body: params,
-        showSuccessMessage: true,
+        showSuccessMessage: false,
         showErrorMessage: true,
         url: APIUtilities.getStoreTransaction);
 
@@ -263,7 +265,7 @@ class CommonRepo {
         type: APIType.tPost,
         body: params,
         showSuccessMessage: false,
-        showErrorMessage: true,
+        showErrorMessage: false,
         url: APIUtilities.getTmtoMFieldsViewBaeneStore);
 
     if (response.isRight) {
@@ -497,7 +499,7 @@ class CommonRepo {
         body: params,
         showSuccessMessage: false,
         showErrorMessage: false,
-        url: APIUtilities.getTMtoMBeneListStore);
+        url: APIUtilities.getBeneListStore);
     if (response.isRight) {
       final data = response.right;
       if (response.isRight) {
@@ -532,6 +534,26 @@ class CommonRepo {
 
     return null;
   }
+  Future<List<TTBBeneModel>?> getBeneListStore(
+      BuildContext context, Map<String, dynamic> params) async {
+    Either<Exception, dynamic> response = await API.callAPI(context,
+        type: APIType.tPost,
+        body: params,
+        showSuccessMessage: false,
+        showErrorMessage: true,
+        url: APIUtilities.getBeneListStore);
+    if (response.isRight) {
+      final data = response.right;
+      if (response.isRight) {
+        List productList = json.decode(response.right);
+        print("response.right response.right");
+        print(response.right);
+        return productList.map((e) => TTBBeneModel.fromJson(e)).toList();
+      }
+    }
+
+    return null;
+  }
 
   Future<MobileValidationResponse?> getTMtoMBeneDeleteStore(
         BuildContext context, Map<String, dynamic> params, String id) async {
@@ -551,6 +573,10 @@ class CommonRepo {
 
     return null;
   }
+
+
+
+
   Future<MobileValidationResponse?> getTTBBeneDeleteStore(
         BuildContext context, Map<String, dynamic> params, String id) async {
         Either<Exception, dynamic> response = await API.callAPI2(context,
@@ -575,7 +601,7 @@ class CommonRepo {
     Either<Exception, dynamic> response = await API.callAPI2(context,
         type: APIType.tPost,
         body: params,
-        showSuccessMessage: true,
+        showSuccessMessage: false,
         showErrorMessage: true,
         url: "${APIUtilities.getTMtoMBeneUpdateStore}$id");
     if (response.isRight) {
@@ -695,5 +721,58 @@ class CommonRepo {
     }
     return null;
   }
+
+  // Card Payment Processing Method
+  Future<ApiResponse?> processCardPayment(
+      BuildContext context, Map<String, dynamic> params) async {
+    try {
+      Either<Exception, dynamic> response = await API.callAPI2(context,
+          type: APIType.tPost,
+          body: params,
+          showSuccessMessage: false,
+          showErrorMessage: true,
+          url: APIUtilities.processCardPayment); // You'll need to add this URL
+
+      if (response.isRight) {
+        print("Card Payment Response: ${response.right}");
+        final data = response.right;
+        return ApiResponse(
+          success: data['success'] ?? true,
+          message: data['message'] ?? 'Payment processed successfully',
+          data: data
+        );
+      }
+    } catch (e) {
+      print("Card Payment Error :: ${e}");
+    }
+    return null;
+  }
+
+ /* // Card Payment Processing Method
+  Future<ApiResponse?> processCardPayment(
+      BuildContext context, Map<String, dynamic> params) async
+  {
+
+    print(params);
+
+
+    final url = Uri.parse("https://ggapi.ibanera.com/v1/payment/deposit");
+
+
+    final response = await http.post(
+      url,
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode(params),
+    );
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      print("✅ ============== $data");
+    } else {
+      print("❌ Error: ${response.statusCode}");
+      print("Body: ${response.body}");
+    }
+
+  }*/
 
 }

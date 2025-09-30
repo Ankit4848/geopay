@@ -1,6 +1,6 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/add_money/widgets/balance_card.dart';
-import 'package:fintech/features/home/view/pages/airtime/controller/airtime_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/add_money/widgets/balance_card.dart';
+import 'package:geopay/features/home/view/pages/airtime/controller/airtime_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -55,6 +55,11 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                             : airtimeController.selectedCountry.value!.name ??
                                 'Select Payer Country',
                         labelText: 'Payer Country *',
+                    hintStyle: FontUtilities.style(
+                      fontSize: 13,
+                      fontWeight: FWT.regular,
+                      fontColor: VariableUtilities.theme.blackColor,
+                    ),
                         errorWidget: airtimeController.countryError.value != ""
                             ? Text(airtimeController.countryError.value,
                                 style: const TextStyle(
@@ -109,6 +114,11 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                               : airtimeController.selectedOprator.value!.name ??
                                   'Select Operator',
                           labelText: "Operator *",
+                    hintStyle: FontUtilities.style(
+                      fontSize: 13,
+                      fontWeight: FWT.regular,
+                      fontColor: VariableUtilities.theme.blackColor,
+                    ),
                           errorWidget:
                               airtimeController.operatorError.value != ""
                                   ? Text(airtimeController.operatorError.value,
@@ -163,6 +173,11 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                               : airtimeController.selectedProduct.value!.name ??
                                   'Select Product',
                           labelText: "Product *",
+                    hintStyle: FontUtilities.style(
+                      fontSize: 13,
+                      fontWeight: FWT.regular,
+                      fontColor: VariableUtilities.theme.blackColor,
+                    ),
                           errorWidget:
                               airtimeController.productError.value != ""
                                   ? Text(airtimeController.productError.value,
@@ -261,6 +276,11 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                                     null
                                 ? "+${airtimeController.selectedCountry.value!.isdcode}"
                                 : '+255',
+                            hintStyle: FontUtilities.style(
+                              fontSize: 13,
+                              fontWeight: FWT.regular,
+                              fontColor: VariableUtilities.theme.blackColor,
+                            ),
                             textInputType: TextInputType.phone,
                             inputFormatters: [
                               FilteringTextInputFormatter.digitsOnly
@@ -307,11 +327,11 @@ class _AirtimeScreenState extends State<AirtimeScreen> {
                                           color: Colors.red, fontSize: 12),
                                     )
                                   : Container(),
-                          suffixIcon: Padding(
+                         /* suffixIcon: Padding(
                             padding:
                                 const EdgeInsets.symmetric(horizontal: 12.0),
                             child: SvgPicture.asset(AssetUtilities.phoneBook),
-                          ),
+                          ),*/
                         ),
                       ),
                     ],

@@ -1,7 +1,7 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/controller/bank_transfer_controller.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/view/add_bank_beneficiary_screen.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/controller/bank_transfer_controller.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/view/add_bank_beneficiary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -328,7 +328,6 @@ class ConfirmBeneficiaryDialog extends StatelessWidget {
                   child: CustomFlatButton(
                     onPressed: () {
                       Get.back();
-
                       Get.to(AddBankBeneficiaryScreen(
                         isEdit: true,
                         mtmBeneficiaryModel: mtmBeneficiaryModel,
@@ -348,11 +347,12 @@ class ConfirmBeneficiaryDialog extends StatelessWidget {
                         ConfirmationDialog(
                           description: 'you want to delete this beneficiary?',
                           onPositveTap: () async {
+
+                            Get.back();
                             bankTransferController.getTMtoMBeneDeleteStore(
                                 mtmBeneficiaryModel.id.toString());
                             await bankTransferController.getTMtoMBeneListStore();
 
-                            Get.back();
                           },
                         ),
                       );

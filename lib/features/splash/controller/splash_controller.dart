@@ -1,7 +1,7 @@
-import 'package:fintech/config/config.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/model/CommonModel.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/model/CommonModel.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
@@ -19,7 +19,7 @@ class SplashController extends GetxController {
     //  Get.offAllNamed(RouteUtilities.dashboard);
     getCommonData();
     if (isFirstTime) {
-      Get.offAllNamed(RouteUtilities.onBoardingScreen);
+      Get.offAllNamed(RouteUtilities.loginScreen);
     } else {
       String token = await SharedPref.getUserToken() ?? '';
       if (token.isNotEmpty) {

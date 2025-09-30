@@ -1,8 +1,8 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/dashboard/controller/dashboard_controller.dart';
-import 'package:fintech/features/transaction_history/controller/transaction_history_controller.dart';
-import 'package:fintech/features/transaction_history/view/transaction_filter_dialog.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/dashboard/controller/dashboard_controller.dart';
+import 'package:geopay/features/transaction_history/controller/transaction_history_controller.dart';
+import 'package:geopay/features/transaction_history/view/transaction_filter_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
@@ -44,9 +44,12 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
       launchUrl(Uri.parse(url),mode: LaunchMode.externalApplication);
 
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Download failed: $e')),
+
+      DialogUtilities.showDialog(
+        title: "Error",
+        message:  "Download failed: $e",
       );
+
     }
   }
 
@@ -199,7 +202,7 @@ class _TransactionHistoryScreenState extends State<TransactionHistoryScreen> {
                             _buildTextRow(
                                 "Remark :", item.comments ?? "-"),
                             _buildTextRow("Notes :",
-                                item.notes == "" ? "-" : item.notes!),
+                                item.notes!=null? item.notes == "" ? "-" : item.notes!:""),
                             _buildTextRow(
                                 "Refund Reason :",
                                 item.refundReason == "null"

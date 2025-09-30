@@ -1,8 +1,8 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/select_country_dialog.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/select_country_dialog.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -63,12 +63,12 @@ class RegisterIndividualForm extends StatelessWidget {
                               ),
                               child: registerController.registerType.value == 0
                                   ? Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: VariableUtilities
-                                            .theme.secondaryColor,
-                                      ),
-                                    )
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: VariableUtilities
+                                      .theme.secondaryColor,
+                                ),
+                              )
                                   : const Offstage(),
                             ),
                             const SizedBox(
@@ -81,7 +81,7 @@ class RegisterIndividualForm extends StatelessWidget {
                                     fontSize: 12,
                                     fontWeight: FWT.medium,
                                     fontColor:
-                                        VariableUtilities.theme.primaryColor),
+                                    VariableUtilities.theme.primaryColor),
                               ),
                             )
                           ],
@@ -107,12 +107,12 @@ class RegisterIndividualForm extends StatelessWidget {
                               ),
                               child: registerController.registerType.value == 1
                                   ? Container(
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: VariableUtilities
-                                            .theme.secondaryColor,
-                                      ),
-                                    )
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: VariableUtilities
+                                      .theme.secondaryColor,
+                                ),
+                              )
                                   : const Offstage(),
                             ),
                             const SizedBox(
@@ -125,7 +125,7 @@ class RegisterIndividualForm extends StatelessWidget {
                                     fontSize: 12,
                                     fontWeight: FWT.medium,
                                     fontColor:
-                                        VariableUtilities.theme.primaryColor),
+                                    VariableUtilities.theme.primaryColor),
                               ),
                             )
                           ],
@@ -141,7 +141,7 @@ class RegisterIndividualForm extends StatelessWidget {
                   Expanded(
                     child: FadeSlideTransition(
                       child: CustomTextField(
-                        labelText: 'First Name',
+                        labelText: 'First Name *',
                         controller: registerController.firstNameCtrl,
                         validator: (value) {
                           if (!Validator.isNotNullOrEmpty(value)) {
@@ -156,7 +156,7 @@ class RegisterIndividualForm extends StatelessWidget {
                   Expanded(
                     child: FadeSlideTransition(
                       child: CustomTextField(
-                        labelText: 'Middle Name (Optional)',
+                        labelText: 'Middle Name',
                         controller: registerController.middleNameCtrl,
 
                       ),
@@ -164,10 +164,10 @@ class RegisterIndividualForm extends StatelessWidget {
                   ),
                 ],
               ),
-             // const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               FadeSlideTransition(
                 child: CustomTextField(
-                  labelText: 'Last Name',
+                  labelText: 'Last Name *',
                   controller: registerController.lastNameCtrl,
                   validator: (value) {
                     if (!Validator.isNotNullOrEmpty(value)) {
@@ -183,7 +183,7 @@ class RegisterIndividualForm extends StatelessWidget {
                     //const SizedBox(height: 16),
                     FadeSlideTransition(
                       child: CustomTextField(
-                        labelText: 'Company Name',
+                        labelText: 'Company Name *',
                         controller: registerController.comanyNameCtrl,
                         validator: (value) {
                           if (!Validator.isNotNullOrEmpty(value)) {
@@ -195,10 +195,10 @@ class RegisterIndividualForm extends StatelessWidget {
                     ),
                   ],
                 ),
-             // const SizedBox(height: 16),
+              // const SizedBox(height: 16),
               FadeSlideTransition(
                 child: CustomTextField(
-                  labelText: 'Email',
+                  labelText: 'Email *',
                   textInputType: TextInputType.emailAddress,
                   controller: registerController.emailCtrl,
                   onTap: registerController.isEmailVerify.value ? () {} : null,
@@ -212,50 +212,56 @@ class RegisterIndividualForm extends StatelessWidget {
                     return Validator.validateEmail(context,
                         email: value ?? '', showSnack: false);
                   },
+
                   suffixIcon: registerController.isEmailVerify.value
                       ? const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 12.0),
-                          child: Icon(
-                            Icons.verified_sharp,
-                            color: Colors.green,
-                          ),
-                        )
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Icon(
+                      Icons.verified_sharp,
+                      color: Colors.green,
+                    ),
+                  )
                       : registerController.isEmailError.value
-                          ? const Padding(
-                              padding: EdgeInsets.symmetric(horizontal: 12.0),
-                              child: Icon(
-                                Icons.error,
-                                color: Colors.red,
-                              ),
-                            )
-                          : GestureDetector(
-                              onTap: () {
-                                FocusScope.of(context)
-                                    .requestFocus(FocusNode());
-                                if (Validator.validateEmail(context,
-                                        email:
-                                            registerController.emailCtrl.text,
-                                        showSnack: false) ==
-                                    null) {
-                                  registerController
-                                      .sendVerificationEmail(context);
-                                } else {
-                                  Validator.validateEmail(context,
-                                      email: registerController.emailCtrl.text,
-                                      showSnack: true);
-                                }
-                              },
-                              child:  Container(
-                                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                                child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,),),
-                              ),
-                            ),
+                      ? const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 12.0),
+                    child: Icon(
+                      Icons.error,
+                      color: Colors.red,
+                    ),
+                  )
+                      : GestureDetector(
+                    onTap: () {
+                      FocusScope.of(context)
+                          .requestFocus(FocusNode());
+                      if (Validator.validateEmail(context,
+                          email:
+                          registerController.emailCtrl.text,
+                          showSnack: false) ==
+                          null) {
+                        registerController
+                            .sendVerificationEmail(context);
+                      } else {
+                        Validator.validateEmail(context,
+                            email: registerController.emailCtrl.text,
+                            showSnack: true);
+                      }
+                    },
+                    child:  Container(
+                      height: 50,
+                      width: 100,
+                      decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
+                          borderRadius: BorderRadius.circular(10)),
+                      padding: EdgeInsets.symmetric(horizontal: 12.0),
+                      child: Center(child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                    ),
+                  ),
                 ),
               ),
               Obx(
-                () => Visibility(
+                    () => Visibility(
                   visible: registerController.isEmailOTPShow.value &&
                       !registerController.isEmailVerify.value,
+
                   child: FadeSlideTransition(
                     child: Column(
                       children: [
@@ -279,23 +285,23 @@ class RegisterIndividualForm extends StatelessWidget {
                               fieldWidth: 45,
                               borderWidth: 0,
                               activeFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               inactiveColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               inactiveFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               activeColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               selectedFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               selectedColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                             ),
                             animationDuration:
-                                const Duration(milliseconds: 300),
+                            const Duration(milliseconds: 300),
                             enableActiveFill: true,
                             errorAnimationController:
-                                registerController.otpVerification,
+                            registerController.otpVerification,
                             textStyle: FontUtilities.style(
                                 fontSize: 16,
                                 fontColor: VariableUtilities.theme.blackColor,
@@ -316,37 +322,43 @@ class RegisterIndividualForm extends StatelessWidget {
                           ),
                         ).paddingOnly(top: 12),
                         Obx(() => GestureDetector(
-                              onTap: () {
-                                if (registerController
-                                    .isEmailResendEnabled.value) {
-                                  registerController.sendVerificationEmail(
-                                      context,
-                                      isResend: true);
-                                }
-                              },
-                              child: Text(
-                                registerController.isEmailResendEnabled.value
-                                    ? "Resend OTP"
-                                    : "Resend OTP in ${registerController.emailTimerSeconds.value} sec",
-                                style: TextStyle(
-                                  color: registerController
-                                          .isEmailResendEnabled.value
-                                      ? VariableUtilities.theme.secondaryColor
-                                      : VariableUtilities.theme.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )),
+                          onTap: () {
+                            if (registerController
+                                .isEmailResendEnabled.value) {
+                              registerController.sendVerificationEmail(
+                                  context,
+                                  isResend: true);
+                            }
+                          },
+                          child:registerController.isEmailResendEnabled.value
+                              ?Container(
+                            height: 40,
+                            width: 120,
+                            decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Center(child: Text("Resend OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                          ): Text(
+                            "Resend OTP in ${registerController.emailTimerSeconds.value} sec",
+                            style: TextStyle(
+                              color: registerController
+                                  .isEmailResendEnabled.value
+                                  ? VariableUtilities.theme.secondaryColor
+                                  : VariableUtilities.theme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )),
                       ],
                     ),
                   ),
                 ),
               ),
-             // const SizedBox(height: 20,),
+              // const SizedBox(height: 20,),
               //Mobile No.
               FadeSlideTransition(
                 child: Text(
-                  'Mobile No.',
+                  'Mobile No.  *',
                   style: FontUtilities.style(
                     fontSize: 14,
                     fontWeight: FWT.semiBold,
@@ -355,12 +367,12 @@ class RegisterIndividualForm extends StatelessWidget {
                   ),
                 ),
               ),
-             // const SizedBox(height: 8,),
+              // const SizedBox(height: 8,),
               FadeSlideTransition(
                 child: Row(
                   children: [
                     Obx(
-                      () => Padding(
+                          () => Padding(
                         padding: const EdgeInsets.only(bottom: 12),
                         // EdgeInsets.only(
                         //     bottom:
@@ -369,41 +381,41 @@ class RegisterIndividualForm extends StatelessWidget {
                           onTap: registerController.isPhoneVerify.value
                               ? null
                               : () {
-                                  registerController.searchController.value
-                                      .clear();
-                                  showDialog(
-                                    context: context,
-                                    barrierDismissible: false,
-                                    useSafeArea: true,
-                                    builder: (context) {
-                                      return Obx(
-                                        () => SelectCountryDialog(
-                                          searchController: registerController
-                                              .searchController.value,
-                                          onClose: () {
-                                            registerController
-                                                .searchController.value
-                                                .clear();
-                                          },
-                                          onChange: (value) {
-                                            registerController
-                                                .onCountrySearch(value ?? '');
-                                          },
-                                          onCountrySelect: (countryModel) {
-                                            registerController.selectedCountry
-                                                .value = countryModel;
-                                          },
-                                        ),
-                                      );
+                            registerController.searchController.value
+                                .clear();
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              useSafeArea: true,
+                              builder: (context) {
+                                return Obx(
+                                      () => SelectCountryDialog(
+                                    searchController: registerController
+                                        .searchController.value,
+                                    onClose: () {
+                                      registerController
+                                          .searchController.value
+                                          .clear();
                                     },
-                                  );
-                                },
+                                    onChange: (value) {
+                                      registerController
+                                          .onCountrySearch(value ?? '');
+                                    },
+                                    onCountrySelect: (countryModel) {
+                                      registerController.selectedCountry
+                                          .value = countryModel;
+                                    },
+                                  ),
+                                );
+                              },
+                            );
+                          },
                           child: Container(
                             height: 46,
-                            width: 100,
+                            width: 80,
                             decoration: BoxDecoration(
                               color:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               borderRadius: BorderRadius.circular(12),
                             ),
                             child: Row(
@@ -413,7 +425,7 @@ class RegisterIndividualForm extends StatelessWidget {
                                     null) ...{
                                   CachedNetworkImageView(
                                     imageUrl: registerController.selectedCountry
-                                            .value?.countryFlag ??
+                                        .value?.countryFlag ??
                                         '',
                                     height: 24,
                                     width: 24,
@@ -423,7 +435,7 @@ class RegisterIndividualForm extends StatelessWidget {
                                   ),
                                   Flexible(
                                     child: Text(registerController
-                                            .selectedCountry.value?.isdcode ??
+                                        .selectedCountry.value?.isdcode ??
                                         ''),
                                   )
                                 }
@@ -467,83 +479,63 @@ class RegisterIndividualForm extends StatelessWidget {
                         },
                         suffixIcon: registerController.isPhoneVerify.value
                             ? const Padding(
-                                padding: EdgeInsets.symmetric(horizontal: 12.0),
-                                child: Icon(
-                                  Icons.verified_sharp,
-                                  color: Colors.green,
-                                ),
-                              )
+                          padding: EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Icon(
+                            Icons.verified_sharp,
+                            color: Colors.green,
+                          ),
+                        )
                             : registerController.isPhoneVerifyError.value
-                                ? const Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(horizontal: 12.0),
-                                    child: Icon(
-                                      Icons.error,
-                                      color: Colors.red,
-                                    ),
-                                  )
-                                : GestureDetector(
-                                    onTap: () async {
-                                      FocusScope.of(context)
-                                          .requestFocus(FocusNode());
-                                      if (registerController
-                                              .selectedCountry.value ==
-                                          null) {
-
-
-
-
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content:  Text(
-                                              "Please select Country code",
-                                              style: const TextStyle(color: Colors.white), // white font
-                                            ),
-                                            backgroundColor: Colors.red, // red background
-                                            duration: const Duration(seconds: 5), // show for 3 seconds
-                                            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-                                          ),
-                                        );
-
-
-
-
-
-                                      } else if (registerController
-                                          .phoneNumberCtrl.text
-                                          .trim()
-                                          .isNotEmpty) {
-                                        registerController
-                                            .sendPhoneVerificationOTP(context);
-                                      } else {
-
-                                        ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(
-                                            content:  Text(
-                                                'Please enter valid mobile number',
-                                              style: const TextStyle(color: Colors.white), // white font
-                                            ),
-                                            backgroundColor: Colors.red, // red background
-                                            duration: const Duration(seconds: 5), // show for 3 seconds
-                                            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-                                          ),
-                                        );
-
-                                      }
-                                    },
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                                      child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,),),
-                                    ),
-                                  ),
+                            ? const Padding(
+                          padding:
+                          EdgeInsets.symmetric(horizontal: 12.0),
+                          child: Icon(
+                            Icons.error,
+                            color: Colors.red,
+                          ),
+                        )
+                            : GestureDetector(
+                          onTap: () async {
+                            FocusScope.of(context)
+                                .requestFocus(FocusNode());
+                            if (registerController
+                                .selectedCountry.value ==
+                                null) {
+                              FancySnackbar.showSnackbar(context,
+                                  message:
+                                  "Please select Country code",duration: 5,
+                                  snackBarType:
+                                  FancySnackBarType.error);
+                            } else if (registerController
+                                .phoneNumberCtrl.text
+                                .trim()
+                                .isNotEmpty) {
+                              registerController
+                                  .sendPhoneVerificationOTP(context);
+                            } else {
+                              FancySnackbar.showSnackbar(context,
+                                  message:
+                                  'Please enter valid mobile number',duration: 5,
+                                  snackBarType:
+                                  FancySnackBarType.error);
+                            }
+                          },
+                          child: Container(
+                            height: 50,
+                            width: 100,
+                            decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Center(child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                          ),
+                        ),
                       ),
                     ),
                   ],
                 ),
               ),
               Obx(
-                () => Visibility(
+                    () => Visibility(
                   visible: registerController.isPhoneOTPShow.value &&
                       !registerController.isPhoneVerify.value,
                   child: FadeSlideTransition(
@@ -567,23 +559,22 @@ class RegisterIndividualForm extends StatelessWidget {
                               fieldWidth: 45,
                               borderWidth: 0,
                               activeFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               inactiveColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               inactiveFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                               activeColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
-                              selectedFillColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
+                              selectedFillColor: VariableUtilities.theme.textFieldFilledColor,
                               selectedColor:
-                                  VariableUtilities.theme.textFieldFilledColor,
+                              VariableUtilities.theme.textFieldFilledColor,
                             ),
                             animationDuration:
-                                const Duration(milliseconds: 300),
+                            const Duration(milliseconds: 300),
                             enableActiveFill: true,
                             errorAnimationController:
-                                registerController.otpVerification,
+                            registerController.otpVerification,
                             textStyle: FontUtilities.style(
                                 fontSize: 16,
                                 fontColor: VariableUtilities.theme.blackColor,
@@ -604,37 +595,44 @@ class RegisterIndividualForm extends StatelessWidget {
                           ),
                         ).paddingOnly(top: 12),
                         Obx(() => GestureDetector(
-                              onTap: () {
-                                if (registerController
-                                    .isMobileResendEnabled.value) {
-                                  registerController.sendPhoneVerificationOTP(
-                                      context,
-                                      isResend: true);
-                                }
-                              },
-                              child: Text(
-                                registerController.isMobileResendEnabled.value
-                                    ? "Resend OTP"
-                                    : "Resend OTP in ${registerController.mobileTimerSeconds.value} sec",
-                                style: TextStyle(
-                                  color: registerController
-                                          .isMobileResendEnabled.value
-                                      ? VariableUtilities.theme.secondaryColor
-                                      : VariableUtilities.theme.primaryColor,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                            )),
+                          onTap: () {
+                            if (registerController
+                                .isMobileResendEnabled.value) {
+                              registerController.sendPhoneVerificationOTP(
+                                  context,
+                                  isResend: true);
+                            }
+                          },
+                          child:registerController.isMobileResendEnabled.value
+                              ?Container(
+                            height: 40,
+                            width: 120,
+                            decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
+                                borderRadius: BorderRadius.circular(10)),
+                            padding: EdgeInsets.symmetric(horizontal: 12.0),
+                            child: Center(child: Text("Resend OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                          ) : Text(
+                            "Resend OTP in ${registerController.mobileTimerSeconds.value} sec",
+                            style: TextStyle(
+                              color: registerController
+                                  .isMobileResendEnabled.value
+                                  ? VariableUtilities.theme.secondaryColor
+                                  : VariableUtilities.theme.primaryColor,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        )),
                       ],
                     ),
                   ),
                 ),
               ),
-            //  const SizedBox(height: 16),
+              //  const SizedBox(height: 16),
               Obx(
-                () => FadeSlideTransition(
+                    () => FadeSlideTransition(
                   child: CustomTextField(
                     controller: registerController.passwordCtrl,
+                    focusNode: registerController.passwordFocus,
                     isObscureText: registerController.isPassObscure.value,
                     suffixIcon: InkwellWithRippleEffect(
                       onTap: () {
@@ -648,32 +646,36 @@ class RegisterIndividualForm extends StatelessWidget {
                     validator: (value) {
                       return Validator.validatePassword(value ?? '');
                     },
-                    labelText: 'Password',
+                    labelText: 'Password *',
                   ),
                 ),
               ),
 
 
 
+              Obx(() {
+                if (!registerController.isPasswordFocused.value)
+                  return SizedBox.shrink();
 
-            Padding(
-              padding: const EdgeInsets.only(bottom: 10.0,left: 10,right: 10),
-              child: Text("should contain at least one upper case\nshould contain at least one digit\nshould contain at least one Special character\nMust be at least 8 characters in length",
-              style: TextStyle(
-                fontSize: 10,
-                color: Colors.black.withValues(alpha: 0.7)
-              ),),
-            ),
+                return Padding(
+                  padding: const EdgeInsets.only(bottom: 10.0, left: 10, right: 10),
+                  child: Text(
+                    "should contain at least one upper case\nshould contain at least one digit\nshould contain at least one Special character\nMust be at least 8 characters in length",
+                    style: TextStyle(
+                        fontSize: 10,
+                        color: Colors.black.withValues(alpha: 0.7)
+                    ),),
+                );
+              }),
 
 
-
-            //  const SizedBox(height: 16),
+              //  const SizedBox(height: 16),
               Obx(
-                () => FadeSlideTransition(
+                    () => FadeSlideTransition(
                   child: CustomTextField(
                     controller: registerController.confirmPasswordCtrl,
                     isObscureText:
-                        registerController.isConfirmPassObscure.value,
+                    registerController.isConfirmPassObscure.value,
                     suffixIcon: InkwellWithRippleEffect(
                       onTap: () {
                         registerController.toggleConfirmPassObscure();
@@ -689,12 +691,12 @@ class RegisterIndividualForm extends StatelessWidget {
                           confirmPassword: value ?? '',
                           showSnack: false);
                     },
-                    labelText: 'Confirm Password',
+                    labelText: 'Confirm Password *',
                   ),
                 ),
               ),
 
-             /* FadeSlideTransition(
+              /* FadeSlideTransition(
                 child: CustomTextField(
                   labelText: 'Refferal Code',
                   controller: registerController.refferalCodeCtrl,
@@ -707,11 +709,11 @@ class RegisterIndividualForm extends StatelessWidget {
                   child: Row(
                     children: [
                       Obx(
-                        () => Checkbox(
+                            () => Checkbox(
                           checkColor: VariableUtilities.theme.whiteColor,
                           activeColor: VariableUtilities.theme.primaryColor,
                           side: WidgetStateBorderSide.resolveWith(
-                            (states) => BorderSide(
+                                (states) => BorderSide(
                               width: 1.5,
                               color: VariableUtilities.theme.primaryColor,
                             ),
@@ -724,50 +726,50 @@ class RegisterIndividualForm extends StatelessWidget {
                       ),
                       Expanded(
                           child: Wrap(
-                        children: [
-                          Text(
-                            'I have read the',
-                            style: FontUtilities.style(
-                              fontSize: 11,
-                              fontWeight: FWT.medium,
-                              fontColor: VariableUtilities.theme.blackColor,
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Bounce(
-                            onTap: () {
-                              launchUrl(
-                                Uri.parse('https://www.softieons.com/'),
-                              );
-                            },
-                            child: Text(
-                              'User agreement',
-                              style: FontUtilities.style(
-                                fontSize: 11,
-                                fontWeight: FWT.medium,
-                                decoration: TextDecoration.underline,
-                                fontColor:
-                                    VariableUtilities.theme.secondaryColor,
-                              ).copyWith(
-                                decorationColor:
-                                    VariableUtilities.theme.secondaryColor,
+                            children: [
+                              Text(
+                                'I have read the',
+                                style: FontUtilities.style(
+                                  fontSize: 11,
+                                  fontWeight: FWT.medium,
+                                  fontColor: VariableUtilities.theme.blackColor,
+                                ),
                               ),
-                            ),
-                          ),
-                          const SizedBox(
-                            width: 4,
-                          ),
-                          Text(
-                            'And I accept it',
-                            style: FontUtilities.style(
-                                fontSize: 11,
-                                fontWeight: FWT.medium,
-                                fontColor: VariableUtilities.theme.blackColor),
-                          ),
-                        ],
-                      )),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Bounce(
+                                onTap: () {
+                                  launchUrl(
+                                    Uri.parse('https://www.softieons.com/'),
+                                  );
+                                },
+                                child: Text(
+                                  'User agreement',
+                                  style: FontUtilities.style(
+                                    fontSize: 11,
+                                    fontWeight: FWT.medium,
+                                    decoration: TextDecoration.underline,
+                                    fontColor:
+                                    VariableUtilities.theme.secondaryColor,
+                                  ).copyWith(
+                                    decorationColor:
+                                    VariableUtilities.theme.secondaryColor,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 4,
+                              ),
+                              Text(
+                                'And I accept it',
+                                style: FontUtilities.style(
+                                    fontSize: 11,
+                                    fontWeight: FWT.medium,
+                                    fontColor: VariableUtilities.theme.blackColor),
+                              ),
+                            ],
+                          )),
                     ],
                   ),
                 ),

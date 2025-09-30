@@ -1,6 +1,6 @@
-import 'package:fintech/config/config.dart';
-import 'package:fintech/core/app_assets/asset_images.dart';
-import 'package:fintech/core/core.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/app_assets/asset_images.dart';
+import 'package:geopay/core/core.dart';
 import 'package:get/get.dart';
 
 import '../model/drop_down_model.dart';
@@ -13,6 +13,14 @@ class HomeData {
       title: 'Mobile Money',
       onTap: () {
         Get.toNamed(RouteUtilities.addMoneyScreen);
+      },
+    ),
+
+    ServiceModel(
+      gifPath: AssetUtilities.addMoneyGIF,
+      title: 'Deposit Payment',
+      onTap: () {
+        Get.toNamed(RouteUtilities.depositPaymentScreen);
       },
     ),
 

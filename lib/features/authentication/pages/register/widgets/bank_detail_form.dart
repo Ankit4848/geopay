@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/kyc/controller/kyc_controller.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/kyc/controller/kyc_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';

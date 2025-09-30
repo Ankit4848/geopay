@@ -1,8 +1,8 @@
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/controller/home_controller.dart';
-import 'package:fintech/features/home/data/home_data.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/controller/home_controller.dart';
+import 'package:geopay/features/home/data/home_data.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

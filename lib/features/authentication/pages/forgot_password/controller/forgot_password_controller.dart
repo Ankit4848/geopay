@@ -1,6 +1,7 @@
 import 'dart:async';
 
-import 'package:fintech/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/home/view/pages/repo/home_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -65,10 +66,10 @@ class ForgotPasswordController extends GetxController {
       Map<String, dynamic> params = {
         'email': emailCtrl.text.trim(),
       };
-      dynamic forgotPasswordAPI = isResend
+      ApiResponse? forgotPasswordAPI = isResend
           ? await authenticationRepo.forgotPasswordResendOTP(context, params)
           : await authenticationRepo.forgotPassword(context, params);
-      if (forgotPasswordAPI != null) {
+      if (forgotPasswordAPI != null && forgotPasswordAPI.success==true) {
         if (isResend) {
           start.value = 30;
           startTimer();
@@ -77,34 +78,21 @@ class ForgotPasswordController extends GetxController {
         }
 
 
-        Get.dialog(
-            barrierDismissible: false,
-            ResultDialog(
-              title: "",
-              positiveButtonText: "Dismiss",
-              showCloseButton: false,
-              onPositveTap: () async {
-                Get.back(); // close dialog
-              },
-              descriptionWidget: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 10,),
-                  GestureDetector(
-                    child:  Text(forgotPasswordAPI['message'],
-                      style: const TextStyle(
-                          fontSize: 14,
-                          color: Colors.white,
-                          fontWeight: FontWeight.w700
-                      ),),
-                  ),
-                ],
-              ), description: '',
-            ));
+        DialogUtilities.showDialog(
+          message: forgotPasswordAPI!.message!,
+        );
 
 
-      }
+      }else
+        {
+
+          DialogUtilities.showDialog(
+            title: "Error",
+            message: forgotPasswordAPI!.message!,
+          );
+
+
+        }
     } catch (e) {
       print("Error: ${e}");
     } finally {
@@ -124,50 +112,30 @@ class ForgotPasswordController extends GetxController {
           'email': emailCtrl.text.trim(),
           'otp': otpCtrl.text.trim(),
         };
-        Map<String, dynamic>? apiResponse =
+        ApiResponse? apiResponse =
             await authenticationRepo.verifyForgotEmail(context, params);
 
-        if (apiResponse != null) {
+        if (apiResponse != null && apiResponse.success == true) {
           Get.toNamed(RouteUtilities.createPassword);
           update();
 
 
 
-
-          Get.dialog(
-              barrierDismissible: false,
-              ResultDialog(
-                title: "",
-                positiveButtonText: "Dismiss",
-                showCloseButton: false,
-                onPositveTap: () async {
-                  Get.back(); // close dialog
-                },
-                descriptionWidget: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10,),
-                    GestureDetector(
-                      child:  Text( apiResponse['message'],
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700
-                        ),),
-                    ),
-                  ],
-                ), description: '',
-              ));
+          DialogUtilities.showDialog(
+            message: apiResponse!.message!,
+          );
 
 
 
+        }else
+          {
 
+            DialogUtilities.showDialog(
+              title: "Error",
+              message: apiResponse!.message!,
+            );
 
-
-
-
-        }
+          }
       } catch (e) {
         print("Error: ${e}");
       } finally {
@@ -175,31 +143,12 @@ class ForgotPasswordController extends GetxController {
       }
     } else {
 
-      Get.dialog(
-          barrierDismissible: false,
-          ResultDialog(
-            title: "Error",
-            positiveButtonText: "Dismiss",
-            showCloseButton: false,
-            onPositveTap: () async {
-              Get.back(); // close dialog
-            },
-            descriptionWidget: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const SizedBox(height: 10,),
-                GestureDetector(
-                  child:  Text( "Please Enter Valid OTP",
-                    style: const TextStyle(
-                        fontSize: 14,
-                        color: Colors.white,
-                        fontWeight: FontWeight.w700
-                    ),),
-                ),
-              ],
-            ), description: '',
-          ));
+      DialogUtilities.showDialog(
+        title: "Error",
+        message:    "Please Enter Valid OTP",
+      );
+
+
     }
     update();
   }
@@ -215,43 +164,26 @@ class ForgotPasswordController extends GetxController {
           'password': passwordCtrl.text.trim(),
           'password_confirmation': confirmPassCtrl.text.trim(),
         };
-        Map<String, dynamic>? apiResponse =
+        ApiResponse? apiResponse =
             await authenticationRepo.resetPassword(context, params);
 
-        if (apiResponse != null) {
+        if (apiResponse != null && apiResponse.success==true) {
           Get.offAllNamed(RouteUtilities.loginScreen);
           update();
 
-
-          Get.dialog(
-              barrierDismissible: false,
-              ResultDialog(
-                title: "",
-                positiveButtonText: "Dismiss",
-                showCloseButton: false,
-                onPositveTap: () async {
-                  Get.back(); // close dialog
-                },
-                descriptionWidget: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10,),
-                    GestureDetector(
-                      child:  Text( apiResponse['message'],
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700
-                        ),),
-                    ),
-                  ],
-                ), description: '',
-              ));
+          DialogUtilities.showDialog(
+            title: "Error",
+            message: apiResponse!.message!,
+          );
 
 
+        }else
+        {
 
-
+          DialogUtilities.showDialog(
+            title: "Error",
+            message: apiResponse!.message!,
+          );
 
         }
       } catch (e) {

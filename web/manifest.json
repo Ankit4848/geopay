@@ -1,6 +1,6 @@
 {
-    "name": "fintech",
-    "short_name": "fintech",
+    "name": "geopay",
+    "short_name": "geopay",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

@@ -1,5 +1,5 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
+import 'package:geopay/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'dart:io';
@@ -42,20 +42,28 @@ class _DocumentUploadScreenState extends State<DocumentUploadScreen> {
   }
 
   Future<void> pickFile() async {
-    FilePickerResult? result = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
-      allowMultiple: true,
-    );
+    try {
+      // Use one-time access approach with FilePicker
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: ['jpg', 'jpeg', 'png', 'pdf'],
+        allowMultiple: true,
+        // Use the system's file picker which doesn't require persistent permissions
+        withData: false, // Don't load file data in memory
+        withReadStream: true, // Use file streams for better memory management
+      );
 
-    if (result != null) {
-      setState(() {
-        pickedFiles = result.files;
+      if (result != null) {
+        setState(() {
+          pickedFiles = result.files;
 
-        if (selectedDirector != null && selectedDocument != null) {
-          uploadedFiles[selectedDirector!]![selectedDocument!] = [];
-        }
-      });
+          if (selectedDirector != null && selectedDocument != null) {
+            uploadedFiles[selectedDirector!]![selectedDocument!] = [];
+          }
+        });
+      }
+    } catch (e) {
+      print("Error picking files: $e");
     }
   }
 

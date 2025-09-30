@@ -1,9 +1,9 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/model/OpratorModel.dart';
-import 'package:fintech/features/home/model/productsModel.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/model/OpratorModel.dart';
+import 'package:geopay/features/home/model/productsModel.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

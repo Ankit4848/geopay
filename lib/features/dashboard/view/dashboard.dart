@@ -1,9 +1,9 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/dashboard/controller/dashboard_controller.dart';
-import 'package:fintech/features/home/view/home_screen.dart';
-import 'package:fintech/features/profile/view/profile_screen.dart';
-import 'package:fintech/features/transaction_history/view/transaction_history_screen.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/dashboard/controller/dashboard_controller.dart';
+import 'package:geopay/features/home/view/home_screen.dart';
+import 'package:geopay/features/profile/view/profile_screen.dart';
+import 'package:geopay/features/transaction_history/view/transaction_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

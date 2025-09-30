@@ -6,15 +6,17 @@ class MTMBeneficiaryModel {
   MTMBeneficiaryModelData? data;
   String? createdAt;
   String? updatedAt;
+  CountryDetail? countryDetail;
 
   MTMBeneficiaryModel(
       {this.id,
-        this.userId,
-        this.categoryName,
-        this.serviceName,
-        this.data,
-        this.createdAt,
-        this.updatedAt});
+      this.userId,
+      this.categoryName,
+      this.serviceName,
+      this.data,
+      this.createdAt,
+      this.updatedAt,
+      this.countryDetail});
 
   MTMBeneficiaryModel.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -24,6 +26,9 @@ class MTMBeneficiaryModel {
     data = json['data'] != null ? new MTMBeneficiaryModelData.fromJson(json['data']) : null;
     createdAt = json['created_at'];
     updatedAt = json['updated_at'];
+    countryDetail = json['country_detail'] != null
+        ? new CountryDetail.fromJson(json['country_detail'])
+        : null;
   }
 
   Map<String, dynamic> toJson() {
@@ -37,6 +42,9 @@ class MTMBeneficiaryModel {
     }
     data['created_at'] = this.createdAt;
     data['updated_at'] = this.updatedAt;
+    if (this.countryDetail != null) {
+      data['country_detail'] = this.countryDetail!.toJson();
+    }
     return data;
   }
 }
@@ -154,6 +162,28 @@ class MTMBeneficiaryModelData {
     data['sender_surname'] = this.senderSurname;
     data['payoutCountry'] = this.payoutCountry;
     data['payoutCurrency'] = this.payoutCurrency;
+    return data;
+  }
+}
+
+class CountryDetail {
+  int? id;
+  int? countryCode;
+  String? flag;
+
+  CountryDetail({this.id, this.countryCode, this.flag});
+
+  CountryDetail.fromJson(Map<String, dynamic> json) {
+    id = json['id'];
+    countryCode = json['country_code'];
+    flag = json['flag'];
+  }
+
+  Map<String, dynamic> toJson() {
+    final Map<String, dynamic> data = new Map<String, dynamic>();
+    data['id'] = this.id;
+    data['country_code'] = this.countryCode;
+    data['flag'] = this.flag;
     return data;
   }
 }

@@ -1,5 +1,5 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/splash/controller/splash_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

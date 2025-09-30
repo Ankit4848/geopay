@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "fintech" "\0"
+            VALUE "CompanyName", "com.softieons" "\0"
+            VALUE "FileDescription", "geopay" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "fintech" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2024 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "fintech.exe" "\0"
-            VALUE "ProductName", "fintech" "\0"
+            VALUE "InternalName", "geopay" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2025 com.softieons. All rights reserved." "\0"
+            VALUE "OriginalFilename", "geopay.exe" "\0"
+            VALUE "ProductName", "geopay" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

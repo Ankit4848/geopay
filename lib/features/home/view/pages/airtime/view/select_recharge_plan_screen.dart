@@ -1,8 +1,8 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/config/config.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/airtime/controller/airtime_controller.dart';
-import 'package:fintech/features/home/view/pages/airtime/widget/recharge_plan_card.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/airtime/controller/airtime_controller.dart';
+import 'package:geopay/features/home/view/pages/airtime/widget/recharge_plan_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';

@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/config/config.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/view/QRScanScreen.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/view/QRScanScreen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

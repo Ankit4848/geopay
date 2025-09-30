@@ -6,6 +6,7 @@ class TTBBeneModel {
   final Map<String, dynamic> data;
   final DateTime createdAt;
   final DateTime updatedAt;
+  final Map<String, dynamic> countryDetail;
 
   TTBBeneModel({
     required this.id,
@@ -13,6 +14,7 @@ class TTBBeneModel {
     required this.categoryName,
     required this.serviceName,
     required this.data,
+    required this.countryDetail,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -24,6 +26,7 @@ class TTBBeneModel {
       categoryName: json['category_name'],
       serviceName: json['service_name'],
       data: Map<String, dynamic>.from(json['data'] ?? {}),
+      countryDetail: Map<String, dynamic>.from(json['country_detail'] ?? {}),
       createdAt: DateTime.parse(json['created_at']),
       updatedAt: DateTime.parse(json['updated_at']),
     );
@@ -35,6 +38,7 @@ class TTBBeneModel {
     'category_name': categoryName,
     'service_name': serviceName,
     'data': data,
+    'country_detail': countryDetail,
     'created_at': createdAt.toIso8601String(),
     'updated_at': updatedAt.toIso8601String(),
   };

@@ -1,5 +1,5 @@
-import 'package:fintech/config/navigation/app_route.dart';
-import 'package:fintech/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
+import 'package:geopay/config/navigation/app_route.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/controller/pay_to_wallet_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -93,6 +93,11 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
                             .selectedCountry.value!.name ??
                             'Select Payer Country',
                         labelText: "Payer Country *",
+                            hintStyle: FontUtilities.style(
+                              fontSize: 13,
+                              fontWeight: FWT.regular,
+                              fontColor: VariableUtilities.theme.blackColor,
+                            ),
                         onTap: () {
                           showDialog(
                             context: context,
@@ -168,6 +173,11 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
                                   ? "+"
                                   : "+${payToWalletController.selectedCountry.value!.isdcode}",
                                   onTap: () { },
+                                  hintStyle: FontUtilities.style(
+                                    fontSize: 13,
+                                    fontWeight: FWT.regular,
+                                    fontColor: VariableUtilities.theme.blackColor,
+                                  ),
                             ),
                           ),
                         ),
@@ -177,12 +187,12 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
                           child: Obx(
                                 () => CustomTextField(
                               controller: payToWalletController.mobileCtrl,
-                              suffixIcon: Padding(
+                             /* suffixIcon: Padding(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 12.0),
                                 child:
                                 SvgPicture.asset(AssetUtilities.phoneBook),
-                              ),
+                              ),*/
                               textInputType: TextInputType.phone,
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly

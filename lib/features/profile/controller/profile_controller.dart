@@ -1,6 +1,6 @@
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/dashboard/controller/dashboard_controller.dart';
-import 'package:fintech/features/profile/repo/profile_repo.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/dashboard/controller/dashboard_controller.dart';
+import 'package:geopay/features/profile/repo/profile_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';

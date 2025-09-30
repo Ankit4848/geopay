@@ -1,9 +1,9 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/register/controller/register_controller.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/bank_detail_form.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/company_detail_form.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/company_stepper_widget.dart';
-import 'package:fintech/features/authentication/pages/register/widgets/register_individual_form.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/register/controller/register_controller.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/bank_detail_form.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/company_detail_form.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/company_stepper_widget.dart';
+import 'package:geopay/features/authentication/pages/register/widgets/register_individual_form.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

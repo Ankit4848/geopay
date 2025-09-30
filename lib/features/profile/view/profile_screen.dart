@@ -1,9 +1,9 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/config/config.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/dashboard/controller/dashboard_controller.dart';
-import 'package:fintech/features/profile/controller/profile_controller.dart';
-import 'package:fintech/features/profile/widgets/profile_card.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/dashboard/controller/dashboard_controller.dart';
+import 'package:geopay/features/profile/controller/profile_controller.dart';
+import 'package:geopay/features/profile/widgets/profile_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

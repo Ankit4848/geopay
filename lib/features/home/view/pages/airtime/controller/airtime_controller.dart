@@ -1,4 +1,5 @@
-import 'package:fintech/features/home/model/productsModel.dart';
+import 'package:geopay/core/widgets/dialogs/result_dialog.dart';
+import 'package:geopay/features/home/model/productsModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -250,7 +251,41 @@ class AirtimeController extends GetxController {
 
       if (response != null && response!.success == true) {
         fieldErrors.value.remove("mobile_no");
-        await getUserInfo();
+
+
+        Get.dialog(
+            barrierDismissible: false,
+            ResultDialog(
+              title: "Success",
+              positiveButtonText: "Dismiss",
+              showCloseButton: false,
+              onPositveTap: () async {
+                Get.back(); // close dialog
+                await getUserInfo();
+              },
+              descriptionWidget: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const SizedBox(height: 10,),
+                  GestureDetector(
+                    child:  Text(
+                      response.message!,
+                      style: const TextStyle(
+                          fontSize: 14,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700
+                      ),),
+                  ),
+                ],
+              ), description: '',
+            ));
+
+
+
+
+
+
       } else {
         fieldErrors.value.addAll({"mobile_no": response!.message!});
       }

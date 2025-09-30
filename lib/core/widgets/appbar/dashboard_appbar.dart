@@ -1,7 +1,7 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/config/navigation/app_route.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/notification_history/view/notification_history_screen.dart';
+import 'package:geopay/config/navigation/app_route.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/notification_history/view/notification_history_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

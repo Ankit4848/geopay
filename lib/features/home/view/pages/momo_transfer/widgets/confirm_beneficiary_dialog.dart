@@ -1,6 +1,6 @@
-import 'package:fintech/config/config.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/view/add_mobile_beneficiary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
@@ -319,9 +319,10 @@ class ConfirmBeneficiaryDialog extends StatelessWidget {
                         ConfirmationDialog(
                           description: 'you want to delete this beneficiary?',
                           onPositveTap: () {
+                            Get.back();
                             momoTransferController.getTMtoMBeneDeleteStore(
                                 mtmBeneficiaryModel.id!.toString());
-                            Get.back();
+
                           },
                         ),
                       );

@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/data/home_data.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/data/home_data.dart';
 import 'package:flutter/material.dart';
 
 class SelectMoneyOptionWidget extends StatelessWidget {

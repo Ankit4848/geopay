@@ -1,9 +1,13 @@
-import 'package:fintech/core/widgets/dialogs/result_dialog.dart';
-import 'package:fintech/core/widgets/fancy_snackbar/fancy_snackbar.dart';
-import 'package:fintech/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/core/widgets/dialogs/result_dialog.dart';
+import 'package:geopay/core/widgets/fancy_snackbar/fancy_snackbar.dart';
+import 'package:geopay/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/home/view/pages/repo/home_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
+
+import '../../../core/settings/variable_utilities.dart';
 
 class ChangePasswordController extends GetxController {
   TextEditingController oldPasswordCtrl = TextEditingController();
@@ -53,7 +57,7 @@ class ChangePasswordController extends GetxController {
           "password_confirmation": confirmPassCtrl.text.trim(),
         };
 
-        Map<String, dynamic>? apiResponse =
+        ApiResponse? apiResponse =
             await authenticationRepo.profileResetPassword(context, params);
 
         print("apiResponse");
@@ -64,53 +68,28 @@ class ChangePasswordController extends GetxController {
         print("apiResponse");
 
 
-        if (apiResponse!['success'] == true) {
+        if (apiResponse!=null && apiResponse.success == true) {
           //Get.back();
           update();
 
-          Get.dialog(
-              barrierDismissible: false,
-              ResultDialog(
-                title: "",
-                positiveButtonText: "Dismiss",
-                showCloseButton: false,
-                onPositveTap: () async {
-                  Get.back(); // close dialog
-                },
-                descriptionWidget: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(height: 10,),
-                    GestureDetector(
-                      child:  Text(  apiResponse['message'],
-                        style: const TextStyle(
-                            fontSize: 14,
-                            color: Colors.white,
-                            fontWeight: FontWeight.w700
-                        ),),
-                    ),
-                  ],
-                ), description: '',
-              ));
+          DialogUtilities.showDialog(
+
+            message:  apiResponse!.message!,
+          );
+
+
 
 
         }else
           {
-            final String allErrors = getAllErrorsAsSingleText(apiResponse);
+            final String allErrors = getAllErrorsAsSingleText(apiResponse!.data!);
 
-
-            ScaffoldMessenger.of(Get.context!).showSnackBar(
-              SnackBar(
-                content:  Text(
-                 allErrors,
-                  style: const TextStyle(color: Colors.white), // white font
-                ),
-                backgroundColor: Colors.red, // red background
-                duration: const Duration(seconds: 5), // show for 3 seconds
-                behavior: SnackBarBehavior.floating, // optional: floating snackbar
-              ),
+            DialogUtilities.showDialog(
+              title: allErrors,
+              message:  "Please select Country code",
             );
+
+
 
             /*Get.dialog(
                 barrierDismissible: false,

@@ -1,19 +1,36 @@
 // ignore_for_file: unused_local_variable
 
-import 'package:fintech/config/config.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/login/controller/login_controller.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/login/controller/login_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
-class LoginScreen extends StatelessWidget {
+class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    LoginController loginController = Get.find();
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+
+  LoginController loginController = Get.find();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
     loginController.loadRememberedLogin();
+  }
+
+
+
+  @override
+  Widget build(BuildContext context) {
+
     return GetBuilder<LoginController>(
         init: LoginController(),
         builder: (loginController) {

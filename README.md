@@ -1,4 +1,4 @@
-# fintech
+# geopay
 
 A new Flutter project.
 

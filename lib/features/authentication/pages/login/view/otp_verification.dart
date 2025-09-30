@@ -1,5 +1,5 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/authentication/pages/forgot_password/controller/forgot_password_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/authentication/pages/forgot_password/controller/forgot_password_controller.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';

@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:either_dart/either.dart';
-import 'package:fintech/features/common/model/user_model.dart';
+import 'package:geopay/features/common/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../config/config.dart';
@@ -38,7 +38,8 @@ class ProfileRepo {
           fileList: files,
           fileKey: ["profile_image"],
           isFileUpload: files != null ? true : false,
-          showSuccessMessage: true);
+          showErrorMessage: true,
+          showSuccessMessage: false);
       if (response.isRight) {
         return UserModel.fromJson(jsonDecode(response.right));
       }

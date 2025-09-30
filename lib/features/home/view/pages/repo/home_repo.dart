@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:either_dart/either.dart';
-import 'package:fintech/features/common/model/user_model.dart';
+import 'package:geopay/features/common/model/user_model.dart';
 import 'package:flutter/material.dart';
 
 import '../../../../../config/network_client/api/api.dart';

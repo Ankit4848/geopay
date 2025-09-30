@@ -76,11 +76,9 @@ class API {
               request.fields["encrypted_data"] = encryptedData;
             }
 
-            body?.forEach(
-              (key, value) {
-                request.fields[key.toString()] = value.toString();
-              },
-            );
+            body?.forEach((key, value) {
+              request.fields[key.toString()] = value.toString();
+            });
 
             if (fileList != null && fileList.isNotEmpty) {
               for (int i = 0; i < fileList.length; i++) {
@@ -95,22 +93,28 @@ class API {
                 request.files.add(multipartFile);
               }
             }
-            http.StreamedResponse res = await request
-                .send()
-                .timeout(const Duration(seconds: timeoutDuration));
+            http.StreamedResponse res = await request.send().timeout(
+              const Duration(seconds: timeoutDuration),
+            );
             apiResponse = await http.Response.fromStream(res);
           } else {
             print("API Body :: ${apiBody}");
 
             if (apiBody != null)
               print(
-                  "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}");
+                "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}",
+              );
             apiResponse = await client
                 .post(
                   Uri.parse(url),
-                  body: apiBody != null
-                      ? {"encrypted_data": encryptionModel.encryptData(apiBody)}
-                      : null,
+                  body:
+                      apiBody != null
+                          ? {
+                            "encrypted_data": encryptionModel.encryptData(
+                              apiBody,
+                            ),
+                          }
+                          : null,
                   headers: appHeader,
                 )
                 .timeout(const Duration(seconds: timeoutDuration));
@@ -118,34 +122,22 @@ class API {
             print(apiResponse.body);
           }
         }
-
         /// [GET CALL]
         else if (type == APIType.tGet) {
           /// call the api with the specified url using get method.
           apiResponse = await client
-              .get(
-                Uri.parse(url),
-                headers: appHeader,
-              )
-              .timeout(
-                const Duration(seconds: timeoutDuration),
-              );
+              .get(Uri.parse(url), headers: appHeader)
+              .timeout(const Duration(seconds: timeoutDuration));
         } else {
           /// call the api with hte specified url using put method.
           apiResponse = await client
-              .put(
-                Uri.parse(url),
-                body: apiBody,
-                headers: appHeader,
-              )
+              .put(Uri.parse(url), body: apiBody, headers: appHeader)
               .timeout(const Duration(seconds: timeoutDuration));
         }
 
         late Map<String, dynamic> response;
         if (apiResponse.headers['content-type'] == 'application/pdf') {
-          response = {
-            'success': 200,
-          };
+          response = {'success': 200};
         } else {
           response = jsonDecode(apiResponse.body);
         }
@@ -159,9 +151,7 @@ class API {
             if (response.containsKey("error")) {
               print("Error validsation :: ${response['error']}");
               AuthorizationException().showToast(context, response['error']);
-              return Left(
-                AuthorizationException(),
-              );
+              return Left(AuthorizationException());
             }
 
             //// if the api is returning the pdf then direct send the file data..
@@ -170,67 +160,73 @@ class API {
             // }
             if (response['success']) {
               if (response.containsKey("response")) {
-                String decryptedResponse =
-                    encryptionModel.decryptData(response['response']);
+                String decryptedResponse = encryptionModel.decryptData(
+                  response['response'],
+                );
                 if (showSuccessMessage) {
-
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
-
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
                 print("Response message:: ${decryptedResponse}");
                 return Right(response);
               } else {
                 if (showSuccessMessage) {
-
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
               }
               return Right(response);
@@ -249,17 +245,12 @@ class API {
                   ServerException().showToast(context, response['message']);
                 }
               } else if (response.containsKey('errors')) {
-                response['errors'].forEach(
-                  (key, value) {
-                    print("Error Message : ${value}");
-                    if (showErrorMessage) {
-                      ServerException().showToast(
-                        context,
-                        value[0],
-                      );
-                    }
-                  },
-                );
+                response['errors'].forEach((key, value) {
+                  print("Error Message : ${value}");
+                  if (showErrorMessage) {
+                    ServerException().showToast(context, value[0]);
+                  }
+                });
               }
             }
             return Right(response);
@@ -293,9 +284,7 @@ class API {
             if (!response['success']) {
               AuthorizationException().showToast(context, response['message']);
             }
-            return Left(
-              AuthorizationException(),
-            );
+            return Left(AuthorizationException());
           default:
 
             /// when there is some other errors like server, page-not-found,
@@ -306,51 +295,49 @@ class API {
       } on Exception catch (e) {
         print("Exception:: $e");
         if (e is TimeoutException) {
-          GeneralAPIException()
-              .showToast(context, "Request timed out. Please try again later.");
+          GeneralAPIException().showToast(
+            context,
+            "Request timed out. Please try again later.",
+          );
           return Left(GeneralAPIException());
         } else if (e is SocketException) {
           print("Error: ${e}");
-          GeneralAPIException().showToast(context,
-              "No Internet connection. Please check your connection and try again.");
+          GeneralAPIException().showToast(
+            context,
+            "No Internet connection. Please check your connection and try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is HttpException) {
           GeneralAPIException().showToast(
-              context, "Failed to connect to the server. Please try again.");
+            context,
+            "Failed to connect to the server. Please try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is FormatException) {
           if (showErrorMessage) {
             GeneralAPIException().showToast(
-                context, "Bad response format. Please try again later.");
+              context,
+              "Bad response format. Please try again later.",
+            );
           }
           return Left(GeneralAPIException());
         }
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       } catch (e) {
         debugPrint("Error123:::: ${e.toString()}");
 
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       }
     } else {
       debugPrint('No Internet!');
       NoInternetException();
-      return Left(
-        NoInternetException(),
-      );
+      return Left(NoInternetException());
     }
   }
 
@@ -365,8 +352,7 @@ class API {
     Map<String, String>? header,
     bool showSuccessMessage = false,
     bool showErrorMessage = false,
-  }) async
-  {
+  }) async {
     EncryptionModel encryptionModel = EncryptionModel();
     List<ConnectivityResult> connectivityResult =
         await Connectivity().checkConnectivity();
@@ -414,11 +400,9 @@ class API {
               request.fields["encrypted_data"] = encryptedData;
             }
 
-            body?.forEach(
-              (key, value) {
-                request.fields[key.toString()] = value.toString();
-              },
-            );
+            body?.forEach((key, value) {
+              request.fields[key.toString()] = value.toString();
+            });
 
             if (fileList != null && fileList.isNotEmpty) {
               for (int i = 0; i < fileList.length; i++) {
@@ -433,22 +417,28 @@ class API {
                 request.files.add(multipartFile);
               }
             }
-            http.StreamedResponse res = await request
-                .send()
-                .timeout(const Duration(seconds: timeoutDuration));
+            http.StreamedResponse res = await request.send().timeout(
+              const Duration(seconds: timeoutDuration),
+            );
             apiResponse = await http.Response.fromStream(res);
           } else {
             print("API Body :: ${apiBody}");
 
             if (apiBody != null)
               print(
-                  "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}");
+                "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}",
+              );
             apiResponse = await client
                 .post(
                   Uri.parse(url),
-                  body: apiBody != null
-                      ? {"encrypted_data": encryptionModel.encryptData(apiBody)}
-                      : null,
+                  body:
+                      apiBody != null
+                          ? {
+                            "encrypted_data": encryptionModel.encryptData(
+                              apiBody,
+                            ),
+                          }
+                          : null,
                   headers: appHeader,
                 )
                 .timeout(const Duration(seconds: timeoutDuration));
@@ -456,34 +446,22 @@ class API {
             print(apiResponse.body);
           }
         }
-
         /// [GET CALL]
         else if (type == APIType.tGet) {
           /// call the api with the specified url using get method.
           apiResponse = await client
-              .get(
-                Uri.parse(url),
-                headers: appHeader,
-              )
-              .timeout(
-                const Duration(seconds: timeoutDuration),
-              );
+              .get(Uri.parse(url), headers: appHeader)
+              .timeout(const Duration(seconds: timeoutDuration));
         } else {
           /// call the api with hte specified url using put method.
           apiResponse = await client
-              .put(
-                Uri.parse(url),
-                body: apiBody,
-                headers: appHeader,
-              )
+              .put(Uri.parse(url), body: apiBody, headers: appHeader)
               .timeout(const Duration(seconds: timeoutDuration));
         }
 
         late Map<String, dynamic> response;
         if (apiResponse.headers['content-type'] == 'application/pdf') {
-          response = {
-            'success': 200,
-          };
+          response = {'success': 200};
         } else {
           response = jsonDecode(apiResponse.body);
         }
@@ -497,9 +475,7 @@ class API {
             if (response.containsKey("error")) {
               print("Error validsation :: ${response['error']}");
               AuthorizationException().showToast(context, response['error']);
-              return Left(
-                AuthorizationException(),
-              );
+              return Left(AuthorizationException());
             }
 
             //// if the api is returning the pdf then direct send the file data..
@@ -508,72 +484,73 @@ class API {
             // }
             if (response['success']) {
               if (response.containsKey("response")) {
-                String decryptedResponse =
-                    encryptionModel.decryptData(response['response']);
+                String decryptedResponse = encryptionModel.decryptData(
+                  response['response'],
+                );
                 if (showSuccessMessage) {
-
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
-
-
-
-
-
-
-
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
                 print("Response message:: ${decryptedResponse}");
                 return Right(decryptedResponse);
               } else {
                 if (showSuccessMessage) {
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
               }
               return Right(response);
@@ -592,17 +569,12 @@ class API {
                   ServerException().showToast(context, response['message']);
                 }
               } else if (response.containsKey('errors')) {
-                response['errors'].forEach(
-                  (key, value) {
-                    print("Error Message : ${value}");
-                    if (showErrorMessage) {
-                      ServerException().showToast(
-                        context,
-                        value[0],
-                      );
-                    }
-                  },
-                );
+                response['errors'].forEach((key, value) {
+                  print("Error Message : ${value}");
+                  if (showErrorMessage) {
+                    ServerException().showToast(context, value[0]);
+                  }
+                });
               }
             }
             return Right(response);
@@ -636,9 +608,7 @@ class API {
             if (!response['success']) {
               AuthorizationException().showToast(context, response['message']);
             }
-            return Left(
-              AuthorizationException(),
-            );
+            return Left(AuthorizationException());
           default:
 
             /// when there is some other errors like server, page-not-found,
@@ -649,70 +619,67 @@ class API {
       } on Exception catch (e) {
         print("Exception:: $e");
         if (e is TimeoutException) {
-          GeneralAPIException()
-              .showToast(context, "Request timed out. Please try again later.");
+          GeneralAPIException().showToast(
+            context,
+            "Request timed out. Please try again later.",
+          );
           return Left(GeneralAPIException());
         } else if (e is SocketException) {
           print("Error: ${e}");
-          GeneralAPIException().showToast(context,
-              "No Internet connection. Please check your connection and try again.");
+          GeneralAPIException().showToast(
+            context,
+            "No Internet connection. Please check your connection and try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is HttpException) {
           GeneralAPIException().showToast(
-              context, "Failed to connect to the server. Please try again.");
+            context,
+            "Failed to connect to the server. Please try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is FormatException) {
           if (showErrorMessage) {
             GeneralAPIException().showToast(
-                context, "Bad response format. Please try again later.");
+              context,
+              "Bad response format. Please try again later.",
+            );
           }
           return Left(GeneralAPIException());
         }
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       } catch (e) {
         debugPrint("Error123:::: ${e.toString()}");
 
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       }
     } else {
       debugPrint('No Internet!');
       NoInternetException();
-      return Left(
-        NoInternetException(),
-      );
+      return Left(NoInternetException());
     }
   }
 
   static Future<Either<Exception, dynamic>> callAPI3(
-      BuildContext context, {
-        required String url,
-        required APIType type,
-        Map<String, dynamic>? body,
-        bool isFileUpload = false,
-        List<File>? fileList,
-        List<String>? fileKey,
-        Map<String, String>? header,
-        bool showSuccessMessage = false,
-        bool showErrorMessage = false,
-      }) async
-  {
+    BuildContext context, {
+    required String url,
+    required APIType type,
+    Map<String, dynamic>? body,
+    bool isFileUpload = false,
+    List<File>? fileList,
+    List<String>? fileKey,
+    Map<String, String>? header,
+    bool showSuccessMessage = false,
+    bool showErrorMessage = false,
+  }) async {
     EncryptionModel encryptionModel = EncryptionModel();
     List<ConnectivityResult> connectivityResult =
-    await Connectivity().checkConnectivity();
+        await Connectivity().checkConnectivity();
 
     if (connectivityResult.contains(ConnectivityResult.mobile) ||
         connectivityResult.contains(ConnectivityResult.wifi)) {
@@ -757,11 +724,9 @@ class API {
               request.fields["encrypted_data"] = encryptedData;
             }
 
-            body?.forEach(
-                  (key, value) {
-                request.fields[key.toString()] = value.toString();
-              },
-            );
+            body?.forEach((key, value) {
+              request.fields[key.toString()] = value.toString();
+            });
 
             if (fileList != null && fileList.isNotEmpty) {
               for (int i = 0; i < fileList.length; i++) {
@@ -776,55 +741,37 @@ class API {
                 request.files.add(multipartFile);
               }
             }
-            http.StreamedResponse res = await request
-                .send()
-                .timeout(const Duration(seconds: timeoutDuration));
+            http.StreamedResponse res = await request.send().timeout(
+              const Duration(seconds: timeoutDuration),
+            );
             apiResponse = await http.Response.fromStream(res);
           } else {
             print("API Body :: ${apiBody}");
 
-            if (apiBody != null)
-              print(
-                  "API Body :: encrypted_data ${apiBody}");
+            if (apiBody != null) print("API Body :: encrypted_data ${apiBody}");
             apiResponse = await client
-                .post(
-              Uri.parse(url),
-              body: apiBody,
-              headers: appHeader,
-            )
+                .post(Uri.parse(url), body: apiBody, headers: appHeader)
                 .timeout(const Duration(seconds: timeoutDuration));
 
             print(apiResponse.body);
           }
         }
-
         /// [GET CALL]
         else if (type == APIType.tGet) {
           /// call the api with the specified url using get method.
           apiResponse = await client
-              .get(
-            Uri.parse(url),
-            headers: appHeader,
-          )
-              .timeout(
-            const Duration(seconds: timeoutDuration),
-          );
+              .get(Uri.parse(url), headers: appHeader)
+              .timeout(const Duration(seconds: timeoutDuration));
         } else {
           /// call the api with hte specified url using put method.
           apiResponse = await client
-              .put(
-            Uri.parse(url),
-            body: apiBody,
-            headers: appHeader,
-          )
+              .put(Uri.parse(url), body: apiBody, headers: appHeader)
               .timeout(const Duration(seconds: timeoutDuration));
         }
 
         late Map<String, dynamic> response;
         if (apiResponse.headers['content-type'] == 'application/pdf') {
-          response = {
-            'success': 200,
-          };
+          response = {'success': 200};
         } else {
           response = jsonDecode(apiResponse.body);
         }
@@ -838,9 +785,7 @@ class API {
             if (response.containsKey("error")) {
               print("Error validsation :: ${response['error']}");
               AuthorizationException().showToast(context, response['error']);
-              return Left(
-                AuthorizationException(),
-              );
+              return Left(AuthorizationException());
             }
 
             //// if the api is returning the pdf then direct send the file data..
@@ -849,64 +794,73 @@ class API {
             // }
             if (response['success']) {
               if (response.containsKey("response")) {
-                String decryptedResponse =
-                encryptionModel.decryptData(response['response']);
+                String decryptedResponse = encryptionModel.decryptData(
+                  response['response'],
+                );
                 if (showSuccessMessage) {
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
                 print("Response message:: ${decryptedResponse}");
                 return Right(decryptedResponse);
               } else {
                 if (showSuccessMessage) {
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
               }
               return Right(response);
@@ -915,9 +869,9 @@ class API {
             }
 
           case 500:
-          // server error !
-          /// when the error is from server side then it manage the response
-          /// and show the snack accordingly.
+            // server error !
+            /// when the error is from server side then it manage the response
+            /// and show the snack accordingly.
             print("response:111: $response");
             if (!response['success']) {
               if (response.containsKey('message')) {
@@ -925,33 +879,28 @@ class API {
                   ServerException().showToast(context, response['message']);
                 }
               } else if (response.containsKey('errors')) {
-                response['errors'].forEach(
-                      (key, value) {
-                    print("Error Message : ${value}");
-                    if (showErrorMessage) {
-                      ServerException().showToast(
-                        context,
-                        value[0],
-                      );
-                    }
-                  },
-                );
+                response['errors'].forEach((key, value) {
+                  print("Error Message : ${value}");
+                  if (showErrorMessage) {
+                    ServerException().showToast(context, value[0]);
+                  }
+                });
               }
             }
             return Right(response);
 
           case 404: // page not found !
 
-          /// when the page called from the application is not found
-          /// then it show the message.
+            /// when the page called from the application is not found
+            /// then it show the message.
             if (!response['success']) {
               PageNotFoundException().showToast(context, response['message']);
             }
             return Left(PageNotFoundException());
           case 400: // bad request !
 
-          /// when the request is made with some mistakes or bad or
-          /// improper parameters this part will execute.
+            /// when the request is made with some mistakes or bad or
+            /// improper parameters this part will execute.
             if (!response['success']) {
               BadRequestException().showToast(context, response['message']);
             }
@@ -959,74 +908,70 @@ class API {
 
           case 401:
 
-          /// when there are some authorization error.
+            /// when there are some authorization error.
 
-          /// token will expire after some time..
-          /// so, when user call api with the old token then user again need
-          /// to take new token using the login api.
-          /// so, to get new token user will redirected to the login screen
-          /// when get bellow error message from api.
+            /// token will expire after some time..
+            /// so, when user call api with the old token then user again need
+            /// to take new token using the login api.
+            /// so, to get new token user will redirected to the login screen
+            /// when get bellow error message from api.
             if (!response['success']) {
               AuthorizationException().showToast(context, response['message']);
             }
-            return Left(
-              AuthorizationException(),
-            );
+            return Left(AuthorizationException());
           default:
 
-          /// when there is some other errors like server, page-not-found,
-          /// bad connection then it will return null.
+            /// when there is some other errors like server, page-not-found,
+            /// bad connection then it will return null.
             GeneralAPIException().showToast(context, 'Something went wrong..');
             return Left(GeneralAPIException());
         }
       } on Exception catch (e) {
         print("Exception:: $e");
         if (e is TimeoutException) {
-          GeneralAPIException()
-              .showToast(context, "Request timed out. Please try again later.");
+          GeneralAPIException().showToast(
+            context,
+            "Request timed out. Please try again later.",
+          );
           return Left(GeneralAPIException());
         } else if (e is SocketException) {
           print("Error: ${e}");
-          GeneralAPIException().showToast(context,
-              "No Internet connection. Please check your connection and try again.");
+          GeneralAPIException().showToast(
+            context,
+            "No Internet connection. Please check your connection and try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is HttpException) {
           GeneralAPIException().showToast(
-              context, "Failed to connect to the server. Please try again.");
+            context,
+            "Failed to connect to the server. Please try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is FormatException) {
           if (showErrorMessage) {
             GeneralAPIException().showToast(
-                context, "Bad response format. Please try again later.");
+              context,
+              "Bad response format. Please try again later.",
+            );
           }
           return Left(GeneralAPIException());
         }
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       } catch (e) {
         debugPrint("Error123:::: ${e.toString()}");
 
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       }
     } else {
       debugPrint('No Internet!');
       NoInternetException();
-      return Left(
-        NoInternetException(),
-      );
+      return Left(NoInternetException());
     }
   }
 
@@ -1089,11 +1034,9 @@ class API {
               request.fields["encrypted_data"] = encryptedData;
             }
 
-            body?.forEach(
-              (key, value) {
-                request.fields[key.toString()] = value.toString();
-              },
-            );
+            body?.forEach((key, value) {
+              request.fields[key.toString()] = value.toString();
+            });
 
             if (fileList != null && fileList.isNotEmpty) {
               for (int i = 0; i < fileList.length; i++) {
@@ -1108,22 +1051,28 @@ class API {
                 request.files.add(multipartFile);
               }
             }
-            http.StreamedResponse res = await request
-                .send()
-                .timeout(const Duration(seconds: timeoutDuration));
+            http.StreamedResponse res = await request.send().timeout(
+              const Duration(seconds: timeoutDuration),
+            );
             apiResponse = await http.Response.fromStream(res);
           } else {
             print("API Body :: ${apiBody}");
 
             if (apiBody != null)
               print(
-                  "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}");
+                "API Body :: encrypted_data ${encryptionModel.encryptData(apiBody)}",
+              );
             apiResponse = await client
                 .post(
                   Uri.parse(url),
-                  body: apiBody != null
-                      ? {"encrypted_data": encryptionModel.encryptData(apiBody)}
-                      : null,
+                  body:
+                      apiBody != null
+                          ? {
+                            "encrypted_data": encryptionModel.encryptData(
+                              apiBody,
+                            ),
+                          }
+                          : null,
                   headers: appHeader,
                 )
                 .timeout(const Duration(seconds: timeoutDuration));
@@ -1131,34 +1080,22 @@ class API {
             print(apiResponse.body);
           }
         }
-
         /// [GET CALL]
         else if (type == APIType.tGet) {
           /// call the api with the specified url using get method.
           apiResponse = await client
-              .get(
-                Uri.parse(url),
-                headers: appHeader,
-              )
-              .timeout(
-                const Duration(seconds: timeoutDuration),
-              );
+              .get(Uri.parse(url), headers: appHeader)
+              .timeout(const Duration(seconds: timeoutDuration));
         } else {
           /// call the api with hte specified url using put method.
           apiResponse = await client
-              .put(
-                Uri.parse(url),
-                body: apiBody,
-                headers: appHeader,
-              )
+              .put(Uri.parse(url), body: apiBody, headers: appHeader)
               .timeout(const Duration(seconds: timeoutDuration));
         }
 
         late Map<String, dynamic> response;
         if (apiResponse.headers['content-type'] == 'application/pdf') {
-          response = {
-            'success': 200,
-          };
+          response = {'success': 200};
         } else {
           response = jsonDecode(apiResponse.body);
         }
@@ -1171,48 +1108,48 @@ class API {
             if (response.containsKey("error")) {
               print("Error validsation :: ${response['error']}");
               AuthorizationException().showToast(context, response['error']);
-              return Left(
-                AuthorizationException(),
-              );
+              return Left(AuthorizationException());
             }
 
-            //// if the api is returning the pdf then direct send the file data..
-            // if (apiResponse.headers["content-type"] == "application/pdf") {
-            //   return Right(apiResponse.bodyBytes);
-            // }
             if (response['success']) {
               if (response.containsKey("response")) {
-                String decryptedResponse =
-                    encryptionModel.decryptData(response['response']);
+                String decryptedResponse = encryptionModel.decryptData(
+                  response['response'],
+                );
                 if (showSuccessMessage) {
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
                 print(
-                    "Response message::${response['message']},${response['success']}, ${decryptedResponse}");
+                  "Response message::${response['message']},${response['success']}, ${decryptedResponse}",
+                );
 
                 String a =
                     "{\"success\": ${response['success']},\"message\": \"${response['message']}\", \"response\": ${decryptedResponse}}";
@@ -1221,30 +1158,34 @@ class API {
               } else {
                 if (showSuccessMessage) {
                   Get.dialog(
-                      barrierDismissible: false,
-                      ResultDialog(
-                        title: "",
-                        positiveButtonText: "Dismiss",
-                        showCloseButton: false,
-                        onPositveTap: () async {
-                          Get.back(); // close dialog
-                        },
-                        descriptionWidget: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const SizedBox(height: 10,),
-                            GestureDetector(
-                              child:  Text(  response['message'],
-                                style: const TextStyle(
-                                    fontSize: 14,
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w700
-                                ),),
+                    barrierDismissible: false,
+                    ResultDialog(
+                      title: "Success",
+                      positiveButtonText: "Dismiss",
+                      showCloseButton: false,
+                      onPositveTap: () async {
+                        Get.back(); // close dialog
+                      },
+                      descriptionWidget: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(height: 10),
+                          GestureDetector(
+                            child: Text(
+                              response['message'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                color: Colors.white,
+                                fontWeight: FontWeight.w700,
+                              ),
                             ),
-                          ],
-                        ), description: '',
-                      ));
+                          ),
+                        ],
+                      ),
+                      description: '',
+                    ),
+                  );
                 }
                 String a =
                     "{\"success\": ${response['success']},\"message\": \"${response['message']}\"}";
@@ -1267,17 +1208,12 @@ class API {
                   ServerException().showToast(context, response['message']);
                 }
               } else if (response.containsKey('errors')) {
-                response['errors'].forEach(
-                  (key, value) {
-                    print("Error Message : ${value}");
-                    if (showErrorMessage) {
-                      ServerException().showToast(
-                        context,
-                        value[0],
-                      );
-                    }
-                  },
-                );
+                response['errors'].forEach((key, value) {
+                  print("Error Message : ${value}");
+                  if (showErrorMessage) {
+                    ServerException().showToast(context, value[0]);
+                  }
+                });
               }
             }
             return Right(response);
@@ -1311,9 +1247,7 @@ class API {
             if (!response['success']) {
               AuthorizationException().showToast(context, response['message']);
             }
-            return Left(
-              AuthorizationException(),
-            );
+            return Left(AuthorizationException());
           default:
 
             /// when there is some other errors like server, page-not-found,
@@ -1324,51 +1258,49 @@ class API {
       } on Exception catch (e) {
         print("Exception:: $e");
         if (e is TimeoutException) {
-          GeneralAPIException()
-              .showToast(context, "Request timed out. Please try again later.");
+          GeneralAPIException().showToast(
+            context,
+            "Request timed out. Please try again later.",
+          );
           return Left(GeneralAPIException());
         } else if (e is SocketException) {
           print("Error: ${e}");
-          GeneralAPIException().showToast(context,
-              "No Internet connection. Please check your connection and try again.");
+          GeneralAPIException().showToast(
+            context,
+            "No Internet connection. Please check your connection and try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is HttpException) {
           GeneralAPIException().showToast(
-              context, "Failed to connect to the server. Please try again.");
+            context,
+            "Failed to connect to the server. Please try again.",
+          );
           return Left(GeneralAPIException());
         } else if (e is FormatException) {
           if (showErrorMessage) {
             GeneralAPIException().showToast(
-                context, "Bad response format. Please try again later.");
+              context,
+              "Bad response format. Please try again later.",
+            );
           }
           return Left(GeneralAPIException());
         }
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       } catch (e) {
         debugPrint("Error123:::: ${e.toString()}");
 
         if (showErrorMessage) {
           APIException(message: e.toString()).showToast(context);
         }
-        return Left(
-          APIException(
-            message: e.toString(),
-          ),
-        );
+        return Left(APIException(message: e.toString()));
       }
     } else {
       debugPrint('No Internet!');
       NoInternetException();
-      return Left(
-        NoInternetException(),
-      );
+      return Left(NoInternetException());
     }
   }
 }

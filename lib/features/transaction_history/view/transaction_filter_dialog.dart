@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/transaction_history/controller/transaction_history_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/transaction_history/controller/transaction_history_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';

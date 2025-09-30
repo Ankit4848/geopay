@@ -1,6 +1,7 @@
-import 'package:fintech/core/widgets/dialogs/result_dialog.dart';
-import 'package:fintech/core/widgets/fancy_snackbar/fancy_snackbar.dart';
-import 'package:fintech/features/home/data/home_data.dart';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/core/widgets/dialogs/result_dialog.dart';
+import 'package:geopay/core/widgets/fancy_snackbar/fancy_snackbar.dart';
+import 'package:geopay/features/home/data/home_data.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -52,7 +53,7 @@ class AddMoneyController extends GetxController {
   }
 
   Future<void> fetchAmountBreakdown() async {
-    try {
+    //try {
       Map<String, dynamic> params = {
         "txnAmount": amountCtrl.text,
         "recipient_country": selectedCountry.value!.id,
@@ -66,9 +67,9 @@ class AddMoneyController extends GetxController {
         commissionModel.value = commissionModels;
         update();
       }
-    } catch (e) {
+   /* } catch (e) {
       print("Error: ${e}");
-    } finally {}
+    } finally {}*/
     update();
   }
   RxBool isbtnClick=false.obs;
@@ -122,6 +123,7 @@ class AddMoneyController extends GetxController {
         "service_name": "onafric mobile collection"
       };
 
+      print(params);
       final response =
           await commonRepo.getCommissionStore(Get.context!, params);
 
@@ -131,19 +133,14 @@ class AddMoneyController extends GetxController {
         } else {
 
 
-          ScaffoldMessenger.of(Get.context!).showSnackBar(
-            SnackBar(
-              content:  Text(
-                response!.data["message"],
-                style: const TextStyle(color: Colors.white), // white font
-              ),
-              backgroundColor: Colors.red, // red background
-              duration: const Duration(seconds: 5), // show for 3 seconds
-              behavior: SnackBarBehavior.floating, // optional: floating snackbar
-            ),
+
+          DialogUtilities.showDialog(
+            title: "Error",
+            message:    response!.data["message"],
           );
 
-        /*  Get.dialog(
+
+          /*  Get.dialog(
               barrierDismissible: false,
               ResultDialog(
                 title: "Failed",
@@ -169,23 +166,35 @@ class AddMoneyController extends GetxController {
                 ), description: '',
               ));*/
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         }
       } else {
-       await getUserInfo();
+
+       Get.dialog(
+           barrierDismissible: false,
+           ResultDialog(
+             title: "Request sent",
+             positiveButtonText: "Dismiss",
+             showCloseButton: false,
+             onPositveTap: () async {
+               Get.back(); // close dialog
+               await getUserInfo();
+             },
+             descriptionWidget: Column(
+               mainAxisAlignment: MainAxisAlignment.start,
+               crossAxisAlignment: CrossAxisAlignment.start,
+               children: [
+                 const SizedBox(height: 10,),
+                 GestureDetector(
+                   child:  Text(  response!.message!,
+                     style: const TextStyle(
+                         fontSize: 14,
+                         color: Colors.white,
+                         fontWeight: FontWeight.w700
+                     ),),
+                 ),
+               ],
+             ), description: '',
+           ));
       }
     } catch (e) {
     } finally {

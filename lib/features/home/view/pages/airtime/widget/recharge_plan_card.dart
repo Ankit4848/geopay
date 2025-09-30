@@ -1,4 +1,4 @@
-import 'package:fintech/core/core.dart';
+import 'package:geopay/core/core.dart';
 import 'package:flutter/material.dart';
 
 class RechargePlanCard extends StatelessWidget {

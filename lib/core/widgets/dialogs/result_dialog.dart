@@ -37,7 +37,7 @@ class ResultDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Dialog(
-      backgroundColor: VariableUtilities.theme.blackColor,
+      backgroundColor: VariableUtilities.theme.primaryColor,
       elevation: 2,
 
       insetPadding: const EdgeInsets.symmetric(horizontal: 20),
@@ -59,7 +59,7 @@ class ResultDialog extends StatelessWidget {
                   textAlign: TextAlign.center,
                   title ?? 'Error!',
                   style: FontUtilities.style(
-                      fontSize: 20,
+                      fontSize: 25,
                       fontWeight: FWT.bold,
                       fontColor: VariableUtilities.theme.whiteColor),
                 ),
@@ -74,7 +74,7 @@ class ResultDialog extends StatelessWidget {
                   description,
                   textAlign: TextAlign.center,
                   style: FontUtilities.style(
-                    fontSize: descriptionFontSize ?? 12,
+                    fontSize: descriptionFontSize ?? 17,
                     fontWeight: FWT.bold,
                     fontColor: VariableUtilities.theme.whiteColor,
                   ),
@@ -105,6 +105,12 @@ class ResultDialog extends StatelessWidget {
                   Expanded(
                     child: CustomFlatButton(
                       fontSize: fontSize,
+                      backColor: Color(0xffc6c6c6),
+                      textStyle: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700
+                      ),
                       onPressed: onCloseTap ??
                           () {
                             Get.back();

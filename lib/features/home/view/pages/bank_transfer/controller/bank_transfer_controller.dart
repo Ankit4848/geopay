@@ -1,24 +1,27 @@
-import 'package:fintech/config/navigation/app_route.dart';
-import 'package:fintech/features/authentication/repo/authentication_repo.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/common/model/user_model.dart';
-import 'package:fintech/features/common/repo/common_repo.dart';
-import 'package:fintech/features/home/model/CommissionModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
+import 'package:geopay/config/navigation/app_route.dart';
+import 'package:geopay/features/authentication/repo/authentication_repo.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/common/model/user_model.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
+import 'package:geopay/features/home/model/CommissionModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
 
 import '../../../../../../core/widgets/dialogs/result_dialog.dart';
 
-
-class   BankTransferController extends GetxController {
+class BankTransferController extends GetxController {
   RxnString selectedCountryFlag = RxnString();
   final selectedCountry = Rxn<TTBCountryModel>();
   final selectedBene = Rxn<TTBBeneModel>();
   RxnString selectedBeneficiary = RxnString();
+  
+  // Flag to track if beneficiary is confirmed
+  RxBool isBeneficiaryConfirmed = false.obs;
+  
   TextEditingController amountCtrl = TextEditingController();
   TextEditingController accountDescriptionCtrl = TextEditingController();
 
@@ -26,11 +29,8 @@ class   BankTransferController extends GetxController {
   var beneError = ''.obs;
   var amountError = ''.obs;
 
-
-  RxList<TTBBeneModel> mobileBeneficiaryList =
-      <TTBBeneModel>[].obs;
-  RxList<TTBBeneModel> mobileBeneficiaryRecentList =
-      <TTBBeneModel>[].obs;
+  RxList<TTBBeneModel> mobileBeneficiaryList = <TTBBeneModel>[].obs;
+  RxList<TTBBeneModel> mobileBeneficiaryRecentList = <TTBBeneModel>[].obs;
 
   CommonRepo commonRepo = CommonRepo();
 
@@ -41,11 +41,16 @@ class   BankTransferController extends GetxController {
   @override
   void onInit() {
     // TODO: implement onInit
-    getCountryList();
-
+    getTMtoMBeneListStore();
+    
+    countryError.value = '';
+    beneError.value = '';
+    amountError.value = '';
+    isBeneficiaryConfirmed.value = false; // Initialize confirmation flag
 
     super.onInit();
   }
+
   // New method to set both country and beneficiary from recent recipient
   void selectFromRecentRecipient(Map<String, dynamic> recentData) async {
     // Find and set country
@@ -61,7 +66,8 @@ class   BankTransferController extends GetxController {
 
       // Find and set beneficiary
       var beneficiary = mobileBeneficiaryList
-          .where((b) => b.data["bankaccountnumber"] == recentData["bankaccountnumber"])
+          .where((b) =>
+              b.data["bankaccountnumber"] == recentData["bankaccountnumber"])
           .firstOrNull;
 
       if (beneficiary != null) {
@@ -70,35 +76,37 @@ class   BankTransferController extends GetxController {
       }
     }
   }
+
   Future<void> getCountryList() async {
-      List<TTBCountryModel>? countryListAPI =
-          await commonRepo.getTTBCountryList(Get.context!,true);
-      print("UserModel API :: ${countryListAPI}");
-      if (countryListAPI != null && countryListAPI.isNotEmpty) {
-        countryCollectionList.value = countryListAPI;
-        update();
-      }
+    List<TTBCountryModel>? countryListAPI =
+        await commonRepo.getTTBCountryList(Get.context!, true);
+    print("UserModel API :: ${countryListAPI}");
+    if (countryListAPI != null && countryListAPI.isNotEmpty) {
+      countryCollectionList.value = countryListAPI;
+      update();
+    }
     update();
-      getRecentRecipent();
+    getRecentRecipent();
   }
+
   Future<void> getRecentRecipent() async {
     EasyLoading.show();
-    final response =
-          await commonRepo.getRecentRecipent(Get.context!,true);
-      print("UserModel API :: ${response}");
-      if (response != null && response.isNotEmpty) {
-        mobileBeneficiaryRecentList.value = response;
-        update();
-      }
+    print("Get.context! API :: ${Get.context!}");
+    final response = await commonRepo.getRecentRecipent(Get.context!, true);
+    print("UserModel API :: ${response}");
+    if (response != null && response.isNotEmpty) {
+      mobileBeneficiaryRecentList.value = response;
+      update();
+    }
     EasyLoading.dismiss();
     update();
   }
 
-
   Future<bool> getPassword(String password) async {
     EasyLoading.show();
     Map<String, dynamic> params = {
-      "password": password,};
+      "password": password,
+    };
 
     print(params);
     mobileBeneficiaryList.value.clear();
@@ -112,61 +120,88 @@ class   BankTransferController extends GetxController {
     return response!;
   }
 
-  Future<void> getTMtoMBeneListStore() async {
-     try {
-     EasyLoading.show();
-    Map<String, dynamic> params = {
-    "payoutCurrency": selectedCountry.value!.value,
-    "payoutCountry":  selectedCountry.value!.data,
-    "serviceName": selectedCountry.value!.serviceName,
-    "categoryName": "transfer to bank"
-    };
+ /* Future<void> getTMtoMBeneListStore() async {
+    try {
+      EasyLoading.show();
+      Map<String, dynamic> params = {
+        "payoutCurrency": selectedCountry.value!.value,
+        "payoutCountry": selectedCountry.value!.data,
+        "serviceName": selectedCountry.value!.serviceName,
+        "categoryName": "transfer to bank"
+      };
 
-    print(params);
-     mobileBeneficiaryList.value.clear();
-    final response = await commonRepo.getTTBBeneListStore(
-      Get.context!,
-      params,
-    );
+      print(params);
+      mobileBeneficiaryList.value.clear();
+      final response = await commonRepo.getTTBBeneListStore(
+        Get.context!,
+        params,
+      );
 
-    print("responseresponseresponseresponseresponseresponse");
-    print(response);
+      print("responseresponseresponseresponseresponseresponse");
+      print(response);
 
-    if (response != null && response.isNotEmpty) {
-      mobileBeneficiaryList.value = response;
+      if (response != null && response.isNotEmpty) {
+        mobileBeneficiaryList.value = response;
+        EasyLoading.dismiss();
+        update();
+      }
       EasyLoading.dismiss();
-      update();
-    }
-     EasyLoading.dismiss();
     } catch (e) {
     } finally {
       EasyLoading.dismiss();
     }
-     EasyLoading.dismiss();
+    EasyLoading.dismiss();
+    update();
+  }*/
+  Future<void> getTMtoMBeneListStore() async {
+    try {
+      EasyLoading.show();
+      Map<String, dynamic> params = {
+        "type":  "transfer to bank"
+      };
+
+      print(params);
+      mobileBeneficiaryList.value.clear();
+      final response = await commonRepo.getBeneListStore(
+        Get.context!,
+        params,
+      );
+
+      print("responseresponseresponseresponseresponseresponse");
+      print(response);
+
+      if (response != null && response.isNotEmpty) {
+        mobileBeneficiaryList.value = response;
+        EasyLoading.dismiss();
+        update();
+      }
+      EasyLoading.dismiss();
+    } catch (e) {
+    } finally {
+      EasyLoading.dismiss();
+    }
+    EasyLoading.dismiss();
     update();
   }
 
   Future<void> getTMtoMBeneDeleteStore(String id) async {
-     try {
-     EasyLoading.show();
-    Map<String, dynamic> params = {};
+    try {
+      EasyLoading.show();
+      Map<String, dynamic> params = {};
 
-    print(params);
+      print(params);
 
-    final response =
-        await commonRepo.getTTBBeneDeleteStore(Get.context!, params, id);
+      final response =
+          await commonRepo.getTTBBeneDeleteStore(Get.context!, params, id);
 
-    print("responseresponseresponseresponseresponseresponse");
-    print(response);
+      print("responseresponseresponseresponseresponseresponse");
+      print(response);
 
-    if (response != null && response.success == true) {
-      selectedBene.value=null;
-      getTMtoMBeneListStore();
-
-    } else {
-
-    }
-     } catch (e) {
+      if (response != null && response.success == true) {
+        selectedBene.value = null;
+        getTMtoMBeneListStore();
+      } else {}
+    } catch (e) {
     } finally {
       EasyLoading.dismiss();
     }
@@ -175,28 +210,29 @@ class   BankTransferController extends GetxController {
 
   void changeSelectedCountry(TTBCountryModel? country) {
     selectedCountry.value = country;
-    selectedBene.value=null;
+    selectedBene.value = null;
+    isBeneficiaryConfirmed.value = false; // Reset confirmation flag
     getTMtoMBeneListStore();
     update();
   }
+
   void changeSelectedBene(TTBBeneModel? bene) {
     selectedBene.value = bene;
-
+    isBeneficiaryConfirmed.value = true; // Set confirmation flag
     update();
   }
 
-
   final commissionModel = Rxn<CommissionModel>();
+
   Future<void> fetchAmountBreakdown() async {
- try {
+    try {
       Map<String, dynamic> params = {
         "txnAmount": amountCtrl.text,
         "beneficiaryId": selectedBene.value!.id,
-
       };
 
       CommissionModel? commissionModels =
-      await commonRepo.getTTBMCommissionData(Get.context!, params);
+          await commonRepo.getTTBMCommissionData(Get.context!, params);
       print("commissionModels API :: ${commissionModels}");
       if (commissionModels != null) {
         commissionModel.value = commissionModels;
@@ -209,10 +245,11 @@ class   BankTransferController extends GetxController {
   }
 
   Future<void> getTMtoMStore() async {
+    print("response--------------------");
     try {
-
       EasyLoading.show(dismissOnTap: false);
-      Map<String, dynamic> params =  {
+
+      Map<String, dynamic> params = {
         "country_code": selectedCountry.value!.value,
         "beneficiaryId": selectedBene.value!.id,
         "txnAmount": commissionModel.value!.txnAmount,
@@ -225,65 +262,78 @@ class   BankTransferController extends GetxController {
         "platformCharge": commissionModel.value!.platformCharge,
         "serviceCharge": commissionModel.value!.serviceCharge,
         "payoutCurrencyAmount": commissionModel.value!.payoutCurrencyAmount,
-        "aggregatorCurrencyAmount": commissionModel.value!.aggregatorCurrencyAmount,
+        "aggregatorCurrencyAmount":
+            commissionModel.value!.aggregatorCurrencyAmount,
         "category_name": "transfer to bank",
-        "service_name":selectedCountry.value!.serviceName,
+        "service_name": selectedCountry.value!.serviceName,
         "payoutCountry": selectedCountry.value!.data,
         "payoutCountryName": selectedCountry.value!.label
       };
 
+      print(params);
+
       final response = await commonRepo.getTTBStore(Get.context!, params);
 
-      if (response!=null && response!.success == false ) {
-       // setFieldErrors(response.data['errors']);
+      print("response--------------------");
+      print(response);
+      if (response != null && response!.success == false) {
+        // setFieldErrors(response.data['errors']);
       } else {
-        await getUserInfo(); // call after dialog close
+        //    await getUserInfo(); // call after dialog close
         Get.dialog(
             barrierDismissible: false,
             ResultDialog(
               title: "Transaction Sent",
-
-
               positiveButtonText: "FAQS",
-              onCloseTap: (){
+              onCloseTap: () async {
                 Get.back(); // close dialog
+                await getUserInfo();
                 // await getUserInfo();
-
               },
               showCloseButton: true,
               onPositveTap: () async {
                 Get.back(); // close dialog
+                clearAllFields();
                 Get.toNamed(RouteUtilities.faqScreen);
+                //await getUserInfo();
                 // await getUserInfo(); // call after dialog close
               },
               descriptionWidget: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
-                  const SizedBox(height: 10,),
+                  const SizedBox(
+                    height: 10,
+                  ),
                   GestureDetector(
-                    child:  Text(  response!.data["message"].toString(),
+                    child: Text(
+                      response!.data["message"].toString(),
                       style: const TextStyle(
                           fontSize: 14,
                           color: Colors.white,
-                          fontWeight: FontWeight.w700
-                      ),),
+                          fontWeight: FontWeight.w700),
+                    ),
                   ),
-
                 ],
-              ), description: '',
+              ),
+              description: '',
             ));
       }
     } catch (e) {
+      print("Error in getTMtoMStore: $e");
     } finally {
+      // Clear all fields after submission
+      clearAllFields();
+      
+      // Reload beneficiary list to ensure data is available after submission
+      await getTMtoMBeneListStore();
       EasyLoading.dismiss();
-      isbtnClick.value=false;
+      isbtnClick.value = false;
     }
     update();
   }
-  RxBool isbtnClick=false.obs;
 
+  RxBool isbtnClick = false.obs;
 
   // Get UserInfo
   Future<void> getUserInfo() async {
@@ -293,21 +343,14 @@ class   BankTransferController extends GetxController {
         Get.context!,
       );
 
-
-
-
-
       if (userModelAPI != null) {
         commonController.userModel.value = userModelAPI;
         commonController.update();
 
-          Get.offAllNamed(
-            RouteUtilities.dashboard,
-          );
-
-      } else {
-
-      }
+        Get.offAllNamed(
+          RouteUtilities.dashboard,
+        );
+      } else {}
     } catch (e) {
       print("Error: ${e}");
     } finally {
@@ -316,10 +359,7 @@ class   BankTransferController extends GetxController {
     update();
   }
 
-
-
   void clearAllFields() {
-
     amountCtrl.clear();
     accountDescriptionCtrl.clear();
     countryError.value = '';
@@ -327,11 +367,9 @@ class   BankTransferController extends GetxController {
     amountError.value = '';
     selectedCountry.value = null;
     selectedBene.value = null;
+    isBeneficiaryConfirmed.value = false; // Reset confirmation flag
 
     commissionModel.value = null;
     // Also reset any extra values like breakdown info, etc.
   }
-
-
-
 }

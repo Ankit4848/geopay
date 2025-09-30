@@ -1,5 +1,5 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

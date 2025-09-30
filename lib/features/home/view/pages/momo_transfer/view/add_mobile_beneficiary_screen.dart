@@ -1,4 +1,4 @@
-import 'package:fintech/core/core.dart';
+import 'package:geopay/core/core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -119,11 +119,16 @@ class _AddMobileBeneficiaryScreenState
                   CustomTextField(
                     hintText: addMobileBeneficiaryController
                         .selectedCountry.value?.name ??
-                        'Select Payer Country',
-                    labelText: "Payer Country *",
+                        'Select Recipient Country',
+                    labelText: "Recipient Country *",
+                    hintStyle: FontUtilities.style(
+                      fontSize: 13,
+                      fontWeight: FWT.regular,
+                      fontColor: VariableUtilities.theme.blackColor,
+                    ),
                     onTap: () {
                       Get.dialog(DropdownBottomsheet(
-                        label: 'Select Payer Country',
+                        label: 'Select Recipient Country',
                         dropDownItemList: addMobileBeneficiaryController
                             .countryCollectionList
                             .map((country) => DropDownModel(
@@ -171,6 +176,11 @@ class _AddMobileBeneficiaryScreenState
                               : addMobileBeneficiaryController
                               .selectedChannel.value!.channel,
                           labelText: "Channel *",
+                          hintStyle: FontUtilities.style(
+                            fontSize: 13,
+                            fontWeight: FWT.regular,
+                            fontColor: VariableUtilities.theme.blackColor,
+                          ),
                           onTap: () {
                             Get.dialog(DropdownBottomsheet(
                               label: 'Select Channel',
@@ -227,8 +237,26 @@ class _AddMobileBeneficiaryScreenState
                           ...controller.mobileBeneficiaryList.map((field) {
                             final isDate = field.inputType == 'date';
                             final isRequired = field.required!;
-                            final label =
-                                field.fieldLabel! + (isRequired ? ' *' : '');
+                            var label = field.fieldLabel! + (isRequired ? ' *' : '');
+                            var hint = field.fieldLabel! + (isRequired ? ' *' : '');
+                            if(field.fieldName=="senderbeneficiaryrelationship") {
+                              label = "Relation with Recipient"+
+                                  (isRequired ? ' *' : '');
+                              hint = "Relation with Recipient"+
+                                  (isRequired ? ' *' : '');
+                            }else if(field.fieldName!.contains("address")) {
+                              hint = "(Apt/Street/Area/Zip code)"+
+                                  (isRequired ? ' *' : '');
+                            }else
+                            {
+                              label = field.fieldLabel! +
+                                  (isRequired ? ' *' : '');
+                              hint = field.fieldLabel! +
+                                  (isRequired ? ' *' : '');
+                            }
+
+
+
 
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 5),
@@ -250,7 +278,7 @@ class _AddMobileBeneficiaryScreenState
                                         .format(picked);
                                   }
                                 },
-                                hintText: label,
+                                hintText: hint,
                                 labelText: label,
                                 errorWidget: controller.fieldErrors[
                                 field.fieldName] !=
@@ -296,8 +324,14 @@ class _AddMobileBeneficiaryScreenState
                                                 null
                                                 ? "+${controller.selectedCountry.value!.isdcode}"
                                                 : '+255',
+                                            hintStyle: FontUtilities.style(
+                                              fontSize: 13,
+                                              fontWeight: FWT.regular,
+                                              fontColor: VariableUtilities.theme.blackColor,
+                                            ),
                                             textInputType:
                                             TextInputType.phone,
+
                                             inputFormatters: [
                                               FilteringTextInputFormatter
                                                   .digitsOnly
@@ -338,13 +372,13 @@ class _AddMobileBeneficiaryScreenState
                                                 fontSize: 12),
                                           )
                                               : Container(),
-                                          suffixIcon: Padding(
+                                         /* suffixIcon: Padding(
                                             padding: const EdgeInsets
                                                 .symmetric(
                                                 horizontal: 12.0),
                                             child: SvgPicture.asset(
                                                 AssetUtilities.phoneBook),
-                                          ),
+                                          ),*/
                                         ),
                                       ),
                                                                       ],
@@ -366,7 +400,7 @@ class _AddMobileBeneficiaryScreenState
                                   FilteringTextInputFormatter
                                       .digitsOnly
                                 ],
-                                hintText: label,
+                                hintText: hint,
                                 labelText: label,
                                 errorWidget: controller.fieldErrors[
                                 field.fieldName] !=

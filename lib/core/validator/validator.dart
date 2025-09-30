@@ -9,17 +9,14 @@ class Validator {
       {required String email, required bool showSnack}) {
     if (email.isEmpty) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              "Please fill the email field!",
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:    "Please fill the email field!",
         );
+
+
+
       }
 
       return 'Please fill the email field !';
@@ -27,17 +24,11 @@ class Validator {
             r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
         .hasMatch(email)) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please enter valid email address !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:    'Please enter valid email address !',
         );
+
       }
       return 'Please enter valid email address !';
     }
@@ -84,31 +75,20 @@ class Validator {
       required bool showSnack}) {
     if (confirmPassword.isEmpty) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please fill the confirm password field!',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:   'Please fill the confirm password field!',
         );
+
+
       }
       return 'Please fill the confirm password field!';
     } else if (password != confirmPassword) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Confirm Password does not match !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:  'Confirm Password does not match !',
         );
       }
       return 'Confirm Password does not match !';
@@ -121,47 +101,29 @@ class Validator {
       {required String phoneNumber, required bool showSnack}) {
     if (phoneNumber.isEmpty) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please fill the phone number field !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+            title: "Error",
+            message:  'Please fill the phone number field !',
         );
+
       }
       return 'Please fill the phone number field !';
     } else if (!RegExp(r'(^(?:[+0]9)?[0-9]{10,12}$)').hasMatch(phoneNumber)) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please enter valid phone number !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+            title: "Error",
+            message:   'Please enter valid phone number !',
         );
+
       }
       return 'Please enter valid phone number !';
     } else if (phoneNumber.trim().length != 10) {
       if (showSnack) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Mobile number length must be 10 digit long',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:    'Mobile number length must be 10 digit long',
         );
+
       }
       return "Mobile number length must be 10 digit long";
     }
@@ -177,17 +139,11 @@ class Validator {
     if (name.trim().isEmpty) {
       if (showSnack) {
 
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please fill the name field !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:    'Please fill the name field !',
         );
+
       }
       return false;
     }
@@ -199,18 +155,11 @@ class Validator {
       {required dynamic image, required showSnack}) {
     if (image == null || image.isEmpty) {
       if (showSnack) {
-
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text(
-              'Please Select Image !',
-              style: TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+        DialogUtilities.showDialog(
+          title: "Error",
+          message: 'Please Select Image !',
         );
+
       }
       return false;
     }

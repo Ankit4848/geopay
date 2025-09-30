@@ -1,6 +1,6 @@
 import 'package:bounce/bounce.dart';
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/model/home_model.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/model/home_model.dart';
 import 'package:flutter/material.dart';
 
 class BuildServiceButton extends StatelessWidget {
@@ -35,6 +35,7 @@ class BuildServiceButton extends StatelessWidget {
                     child: Center(
                       child: Image.asset(
                         serviceModel[index].gifPath,
+
                         height:
                             serviceModel[index].title == "Add Money" ? 55 : 30,
                         width:

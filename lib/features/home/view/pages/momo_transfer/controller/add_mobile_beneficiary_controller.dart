@@ -1,5 +1,6 @@
-import 'package:fintech/features/home/model/MobileBeneficiaryModel.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/model/MTMCountryModel.dart';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/features/home/model/MobileBeneficiaryModel.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/model/MTMCountryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -190,6 +191,7 @@ class AddMobileBeneficiaryController extends GetxController {
               showCloseButton: false,
               onPositveTap: () async {
                 Get.back(); // close dialog
+                Get.back();
               },
               descriptionWidget: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
@@ -218,17 +220,16 @@ class AddMobileBeneficiaryController extends GetxController {
         fieldErrors.value.addAll({"mobile_no": response!.message!});
 
 
-        ScaffoldMessenger.of(Get.context!).showSnackBar(
-          SnackBar(
-            content:  Text(
-              response.message!,
-              style: const TextStyle(color: Colors.white), // white font
-            ),
-            backgroundColor: Colors.red, // red background
-            duration: const Duration(seconds: 5), // show for 3 seconds
-            behavior: SnackBarBehavior.floating, // optional: floating snackbar
-          ),
+
+
+        DialogUtilities.showDialog(
+          title: "Error",
+          message:    response.message!,
         );
+
+
+
+
       }
     }catch(e){}
     finally {
@@ -315,6 +316,11 @@ class AddMobileBeneficiaryController extends GetxController {
         params,
         id
       );
+
+
+
+
+
 
       print("response");
       print("response");

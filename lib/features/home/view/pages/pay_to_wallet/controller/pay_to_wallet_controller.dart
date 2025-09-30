@@ -1,6 +1,6 @@
-import 'package:fintech/features/dashboard/view/dashboard.dart';
-import 'package:fintech/features/home/view/pages/repo/home_repo.dart';
-import 'package:fintech/features/splash/controller/splash_controller.dart';
+import 'package:geopay/features/dashboard/view/dashboard.dart';
+import 'package:geopay/features/home/view/pages/repo/home_repo.dart';
+import 'package:geopay/features/splash/controller/splash_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -100,23 +100,24 @@ class PayToWalletController extends GetxController {
         setErrors(errorModel);
       } else {
 
-        await getUserInfo();
 
         Get.dialog(
             barrierDismissible: false,
             ResultDialog(
               title: "Transaction Sent",
               positiveButtonText: "FAQS",
-              onCloseTap: (){
+              onCloseTap: () async {
                 Get.back(); // close dialog
+                await getUserInfo();
                 // await getUserInfo();
 
               },
               showCloseButton: true,
               onPositveTap: () async {
                 Get.back(); // close dialog
+                await getUserInfo();
                 Get.toNamed(RouteUtilities.faqScreen);
-                // await getUserInfo(); // call after dialog close
+              // call after dialog close
               },
               descriptionWidget: Column(
                 mainAxisAlignment: MainAxisAlignment.start,

@@ -2,8 +2,8 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:either_dart/either.dart';
-import 'package:fintech/features/common/model/user_model.dart';
-import 'package:fintech/features/home/view/pages/repo/home_repo.dart';
+import 'package:geopay/features/common/model/user_model.dart';
+import 'package:geopay/features/home/view/pages/repo/home_repo.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
@@ -59,16 +59,19 @@ class AuthenticationRepo {
   }
 
   /// Verify Email
-  Future<Map<String, dynamic>?> verifyEmail(
+  Future<ApiResponse?> verifyEmail(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost,
           url: APIUtilities.verifyEmail,
           body: params,
-          showSuccessMessage: true);
+          showSuccessMessage: false);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");
@@ -77,16 +80,19 @@ class AuthenticationRepo {
   }
 
   /// Verify Forgot Email
-  Future<Map<String, dynamic>?> verifyForgotEmail(
+  Future<ApiResponse?> verifyForgotEmail(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost,
           url: APIUtilities.verifyForgotEmail,
           body: params,
-          showSuccessMessage: true);
+          showSuccessMessage: false);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");
@@ -214,16 +220,19 @@ class AuthenticationRepo {
     return null;
   }
   /// Forgot Password
-  Future<dynamic> forgotPassword(
+  Future<ApiResponse?> forgotPassword(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost,
           url: APIUtilities.forgotPassword,
           body: params,
-          showSuccessMessage: true);
+          showSuccessMessage: false);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");
@@ -232,16 +241,19 @@ class AuthenticationRepo {
   }
 
   /// Forgot Password Resend OTP
-  Future<dynamic> forgotPasswordResendOTP(
+  Future<ApiResponse?> forgotPasswordResendOTP(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost,
           url: APIUtilities.forgotPasswordResendOTP,
           body: params,
-          showSuccessMessage: true);
+          showSuccessMessage: false);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");
@@ -250,7 +262,7 @@ class AuthenticationRepo {
   }
 
   /// Forgot Password Resend OTP
-  Future<dynamic> resetPassword(
+  Future<ApiResponse?> resetPassword(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
@@ -259,7 +271,10 @@ class AuthenticationRepo {
           body: params,
           showSuccessMessage: true);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");
@@ -288,16 +303,20 @@ class AuthenticationRepo {
 
 
   /// Forgot Password Resend OTP
-  Future<dynamic> profileResetPassword(
+  Future<ApiResponse?> profileResetPassword(
       BuildContext context, Map<String, dynamic> params) async {
     try {
       Either<Exception, dynamic> response = await API.callAPI(context,
           type: APIType.tPost,
           url: APIUtilities.userResetPassword,
           body: params,
-          showSuccessMessage: true);
+          showErrorMessage: false,
+          showSuccessMessage: false);
       if (response.isRight) {
-        return response.right;
+        final data = response.right;
+        print("data $data");
+        print(data);
+        return ApiResponse(success: data['success'] ?? true, message :data['message'] ,data: data);
       }
     } catch (e) {
       print("Error :: ${e}");

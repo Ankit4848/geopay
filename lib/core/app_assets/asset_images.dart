@@ -33,6 +33,7 @@ class AssetUtilities {
   /// Home
   // GIF
   static const String addMoneyGIF = '${_gifImage}add_money.gif';
+  static const String addGIF = '${_gifImage}plus.gif';
   static const String payToWalletGIF = '${_gifImage}pay_to_wallet.gif';
   static const String scanMeGIF = '${_gifImage}scan_me.gif';
   static const String momoTransaferGIF = '${_gifImage}momo_transfer.gif';

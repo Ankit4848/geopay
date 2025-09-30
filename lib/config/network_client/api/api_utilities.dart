@@ -65,6 +65,7 @@ class APIUtilities {
 
   static const String getTMtoMBeneListStore= '${_baseUrl}transfer-mobile-money/beneficiary-list';
   static const String getTTBBeneListStore= '${_baseUrl}transfer-bank/beneficiary-list';
+  static const String getBeneListStore= '${_baseUrl}beneficiery-list';
 
   static const String getTMtoMBeneDeleteStore= '${_baseUrl}transfer-mobile-money/beneficiary-delete/';
   static const String getTTBBeneDeleteStore= '${_baseUrl}transfer-bank/beneficiary-delete/';
@@ -130,4 +131,7 @@ class APIUtilities {
 
   ///User Reset Password
   static const String userResetPassword = '${_baseUrl}user-reset-password';
+
+  /// Card Payment Processing
+  static const String processCardPayment = '${_baseUrl}deposit/payment-link';
 }

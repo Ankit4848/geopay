@@ -1,12 +1,13 @@
-import 'package:fintech/core/widgets/dialogs/result_dialog.dart';
-import 'package:fintech/core/widgets/fancy_snackbar/fancy_snackbar.dart';
-import 'package:fintech/features/common/repo/common_repo.dart';
-import 'package:fintech/features/home/model/drop_down_model.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBankModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/model/MTMCountryModel.dart';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/core/widgets/dialogs/result_dialog.dart';
+import 'package:geopay/core/widgets/fancy_snackbar/fancy_snackbar.dart';
+import 'package:geopay/features/common/repo/common_repo.dart';
+import 'package:geopay/features/home/model/drop_down_model.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBankModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBCountryModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/model/MTMCountryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -63,16 +64,7 @@ class AddBankBeneficiaryController extends GetxController {
       }
     }
     await changeSelectedChannel(selectedBank.value!);
-
-
-
-
     for (var field in mobileBeneficiaryList) {
-
-      print("==========================================================");
-
-      print("==========================================================");
-
       if (dataKeys.contains(field.fieldName)) {
         // match found — update or pre-fill the controller
         fieldControllers[field.fieldName]?.text =
@@ -82,14 +74,6 @@ class AddBankBeneficiaryController extends GetxController {
           dropdownValues[field.fieldName]?.value  =  mtmBeneficiaryModel.data[field.fieldName]?.toString() ??
               '';
         }
-
-
-
-
-
-
-
-
       }
     }
     update();
@@ -318,17 +302,8 @@ class AddBankBeneficiaryController extends GetxController {
 
     } else {
 
-      ScaffoldMessenger.of(Get.context!).showSnackBar(
-        SnackBar(
-          content:  Text(
-            response!.message!,
-            style: const TextStyle(color: Colors.white), // white font
-          ),
-          backgroundColor: Colors.red, // red background
-          duration: const Duration(seconds: 5), // show for 3 seconds
-          behavior: SnackBarBehavior.floating, // optional: floating snackbar
-        ),
-      );
+
+
 
 
 

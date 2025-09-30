@@ -1,9 +1,9 @@
-import 'package:fintech/core/core.dart';
-import 'package:fintech/features/home/model/drop_down_model.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/controller/add_bank_beneficiary_controller.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
-import 'package:fintech/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
-import 'package:fintech/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
+import 'package:geopay/core/core.dart';
+import 'package:geopay/features/home/model/drop_down_model.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/controller/add_bank_beneficiary_controller.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBBeneModel.dart';
+import 'package:geopay/features/home/view/pages/bank_transfer/model/TTBFieldModel.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -70,11 +70,11 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                   const SizedBox(height: 5),
                   const SizedBox(height: 5),
                   CustomTextField(
-                    hintText: addBankBeneficiaryController.selectedCountry.value?.label ?? 'Select Payer Country',
-                    labelText: "Payer Country *",
+                    hintText: addBankBeneficiaryController.selectedCountry.value?.label ?? 'Select Recipient Country',
+                    labelText: "Recipient Country *",
                     onTap: () {
                       Get.dialog(DropdownBottomsheet(
-                        label: 'Select Payer Country',
+                        label: 'Select Recipient Country',
                         dropDownItemList: addBankBeneficiaryController.countryCollectionList
                             .map((country) => DropDownModel(
                                 title: country.label!,
@@ -106,6 +106,11 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                         },
                       ));
                     },
+                    hintStyle: FontUtilities.style(
+                      fontSize: 13,
+                      fontWeight: FWT.regular,
+                      fontColor: VariableUtilities.theme.blackColor,
+                    ),
                     errorWidget: addBankBeneficiaryController
                                 .fieldErrors['country_code'] !=
                             null
@@ -136,6 +141,11 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                                   : addBankBeneficiaryController
                                       .selectedBank.value!.locationName,
                           labelText: "Bank Name *",
+                          hintStyle: FontUtilities.style(
+                            fontSize: 13,
+                            fontWeight: FWT.regular,
+                            fontColor: VariableUtilities.theme.blackColor,
+                          ),
                           onTap: () {
                             Get.dialog(DropdownBottomsheet(
                               label: 'Select Bank',
@@ -187,8 +197,25 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                           ...controller.mobileBeneficiaryList.map((field) {
                             final isDate = field.inputType == 'date';
                             final isRequired = field.required!;
-                            final label = field.fieldLabel! + (isRequired ? ' *' : '');
-
+                            var label = field.fieldLabel!;
+                            var hint=field.fieldLabel! +
+                                (isRequired ? ' *' : '');
+                            print(field.fieldName);
+                            if(field.fieldName=="senderbeneficiaryrelationship") {
+                              label = "Relation with Recipient"+
+                                  (isRequired ? ' *' : '');
+                              hint = "Relation with Recipient"+
+                                  (isRequired ? ' *' : '');
+                            }else if(field.fieldName.contains("address")) {
+                              hint = "(Apt/Street/Area/Zip code)"+
+                                  (isRequired ? ' *' : '');
+                            }else
+                              {
+                                label = field.fieldLabel! +
+                                    (isRequired ? ' *' : '');
+                                hint = field.fieldLabel! +
+                                    (isRequired ? ' *' : '');
+                              }
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 5),
                               child: field.inputType == "select"
@@ -259,7 +286,7 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                                                       BorderRadius.circular(10),
                                                 ),
                                                 isDense: true,
-                                                hintText: label,
+                                                hintText: hint,
                                                 error: controller.fieldErrors[
                                                             field.fieldName] !=
                                                         null
@@ -350,7 +377,7 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                                                       .format(picked);
                                             }
                                           },
-                                          hintText: label,
+                                          hintText: hint,
                                           labelText: label,
                                           errorWidget: controller.fieldErrors[
                                                       field.fieldName] !=
@@ -457,14 +484,14 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                                                                             12),
                                                               )
                                                             : Container(),
-                                                        suffixIcon: Padding(
+                                                       /* suffixIcon: Padding(
                                                           padding: const EdgeInsets
                                                               .symmetric(
                                                               horizontal: 12.0),
                                                           child: SvgPicture.asset(
                                                               AssetUtilities
                                                                   .phoneBook),
-                                                        ),
+                                                        ),*/
                                                       ),
                                                     ),
                                                   ],
@@ -486,7 +513,7 @@ class _AddBankBeneficiaryScreenState extends State<AddBankBeneficiaryScreen> {
                                                           FilteringTextInputFormatter
                                                               .digitsOnly
                                                         ],
-                                              hintText: label,
+                                              hintText: hint,
                                               labelText: label,
                                               errorWidget: controller
                                                               .fieldErrors[

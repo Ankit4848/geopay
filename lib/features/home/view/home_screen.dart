@@ -1,7 +1,7 @@
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/home/widgets/banner_widget.dart';
-import 'package:fintech/features/home/widgets/payout_service_card.dart';
-import 'package:fintech/features/home/widgets/wallet_service_card.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/home/widgets/banner_widget.dart';
+import 'package:geopay/features/home/widgets/payout_service_card.dart';
+import 'package:geopay/features/home/widgets/wallet_service_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,9 +42,7 @@ class HomeScreen extends StatelessWidget {
               physics: const BouncingScrollPhysics(),
               child: Column(
                 children: [
-                  const SizedBox(
-                    height: 24,
-                  ),
+                  const SizedBox(height: 24,),
                   FadeSlideTransition(
                     child: Text(
                       'Available Balance',
@@ -75,8 +73,7 @@ class HomeScreen extends StatelessWidget {
                         builder: (commonController) {
                           return BannerWidget();
                         }),
-                  )
-                  ,
+                  ),
                 ],
               ),
             ),

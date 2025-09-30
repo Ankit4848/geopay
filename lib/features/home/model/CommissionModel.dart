@@ -37,7 +37,7 @@ class CommissionModel {
     exchangeRate = json['exchangeRate'];
     payoutCurrencyAmount = json['payoutCurrencyAmount'].toDouble();
     remitCurrency = json['remitCurrency'];
-    platformCharge = json['platformCharge'];
+    platformCharge = json['platformCharge'].toString();
     serviceCharge = json['serviceCharge'].toDouble();
     sendFee = json['sendFee'].toString();
     totalCharges = json['totalCharges'].toDouble();

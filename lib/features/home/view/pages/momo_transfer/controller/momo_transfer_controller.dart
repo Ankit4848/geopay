@@ -1,4 +1,4 @@
-import 'package:fintech/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
+import 'package:geopay/features/home/view/pages/momo_transfer/model/MTMBeneficiaryModel.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -17,6 +17,10 @@ class MomoTransferController extends GetxController {
   final selectedCountry = Rxn<MTMCountryModel>();
   final selectedBene = Rxn<MTMBeneficiaryModel>();
   RxnString selectedBeneficiary = RxnString();
+  
+  // Flag to track if beneficiary is confirmed
+  RxBool isBeneficiaryConfirmed = false.obs;
+  
   TextEditingController amountCtrl = TextEditingController();
   TextEditingController accountDescriptionCtrl = TextEditingController();
 
@@ -44,6 +48,7 @@ class MomoTransferController extends GetxController {
     countryError.value = '';
     beneError.value = '';
     amountError.value = '';
+    isBeneficiaryConfirmed.value = false; // Initialize confirmation flag
 
     super.onInit();
   }
@@ -80,13 +85,41 @@ class MomoTransferController extends GetxController {
     update();
   }
 
-  Future<void> getTMtoMBeneListStore() async {
+  /*Future<void> getTMtoMBeneListStore() async {
      try {
      EasyLoading.show();
     Map<String, dynamic> params = {
       "recipient_country": selectedCountry.value!.id,
       "serviceName": "onafric",
       "categoryName": "transfer to mobile"
+    };
+
+    print(params);
+     mobileBeneficiaryList.value.clear();
+    final response = await commonRepo.getTMtoMBeneListStore(
+      Get.context!,
+      params,
+    );
+
+
+
+    if (response != null && response.isNotEmpty) {
+      mobileBeneficiaryList.value = response;
+      EasyLoading.dismiss();
+      update();
+    }
+     EasyLoading.dismiss();
+     } catch (e) {
+    } finally {
+      EasyLoading.dismiss();
+    }
+    update();
+  }*/
+  Future<void> getTMtoMBeneListStore() async {
+     try {
+     EasyLoading.show();
+    Map<String, dynamic> params = {
+      "type": "transfer to mobile"
     };
 
     print(params);
@@ -158,13 +191,14 @@ class MomoTransferController extends GetxController {
 
   Future<void> changeSelectedCountry(MTMCountryModel? country) async {
     selectedCountry.value = country;
-    selectedBene.value=null;
+    selectedBene.value = null;
+    isBeneficiaryConfirmed.value = false; // Reset confirmation flag
     await getTMtoMBeneListStore();
     update();
   }
   void changeSelectedBene(MTMBeneficiaryModel? bene) {
     selectedBene.value = bene;
-
+    isBeneficiaryConfirmed.value = true; // Set confirmation flag
     update();
   }
 
@@ -221,21 +255,25 @@ class MomoTransferController extends GetxController {
         print(response);
 
 
-        await getUserInfo(); // call after dialog close
+       // call after dialog close
         Get.dialog(
             barrierDismissible: false,
             ResultDialog(
               title: "Transaction Sent",
 
               positiveButtonText: "FAQS",
-              onCloseTap: (){
+              onCloseTap: () async {
                 Get.back(); // close dialog
+                Get.back(); // close dialog
+                await getUserInfo();
                 // await getUserInfo();
 
               },
               showCloseButton: true,
               onPositveTap: () async {
                 Get.back(); // close dialog
+                clearAllFields();
+              //  await getUserInfo();
                 Get.toNamed(RouteUtilities.faqScreen);
                 // await getUserInfo(); // call after dialog close
               },
@@ -314,6 +352,7 @@ class MomoTransferController extends GetxController {
 
       selectedCountry.value = null;
       selectedBene.value = null;
+      isBeneficiaryConfirmed.value = false; // Reset confirmation flag
 
       commissionModel.value = null;
     }catch(e){}

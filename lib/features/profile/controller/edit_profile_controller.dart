@@ -1,8 +1,10 @@
 import 'dart:io';
 
-import 'package:fintech/config/config.dart';
-import 'package:fintech/features/common/controller/common_controller.dart';
-import 'package:fintech/features/profile/repo/profile_repo.dart';
+import 'package:geopay/config/config.dart';
+import 'package:geopay/core/settings/variable_utilities.dart';
+import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/features/common/controller/common_controller.dart';
+import 'package:geopay/features/profile/repo/profile_repo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:get/get.dart';
@@ -19,11 +21,21 @@ class EditProfileController extends GetxController {
   ProfileRepo profileRepo = ProfileRepo();
   CommonController commonController = Get.find();
   pickImage(ImageSource source) async {
+    // Use one-time permission access approach
     final ImagePicker picker = ImagePicker();
-    final XFile? image = await picker.pickImage(source: source);
-    if (image != null) {
-      profileImage.value = File(image.path);
-      update();
+    try {
+      // This will use the system's file picker which doesn't require persistent permissions
+      final XFile? image = await picker.pickImage(
+        source: source,
+        // Ensure we're not requesting storage permissions
+        requestFullMetadata: false,
+      );
+      if (image != null) {
+        profileImage.value = File(image.path);
+        update();
+      }
+    } catch (e) {
+      print("Error picking image: $e");
     }
   }
 
@@ -54,9 +66,20 @@ class EditProfileController extends GetxController {
         if (apiResponse != null) {
           commonController.userModel.value = apiResponse;
           commonController.update();
+
+
+
+
+
+
+          DialogUtilities.showDialog(
+
+            message:   "Your profile has been updated successfully.",
+          );
+
           update();
           EasyLoading.dismiss();
-          Get.back();
+
         }
       } catch (e) {
         print("Error: ${e}");

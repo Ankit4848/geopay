@@ -14,7 +14,7 @@ class AuthorizationException implements Exception {
   /// show snackbar.
   void showToast(BuildContext context, String? message) {
 
-   /* Get.dialog(
+    Get.dialog(
         barrierDismissible: false,
         ResultDialog(
           title: "Error",
@@ -38,19 +38,9 @@ class AuthorizationException implements Exception {
               ),
             ],
           ), description: '',
-        ));*/
+        ));
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content:  Text(
-          message ?? _message,
-          style: const TextStyle(color: Colors.white), // white font
-        ),
-        backgroundColor: Colors.red, // red background
-        duration: const Duration(seconds: 5), // show for 3 seconds
-        behavior: SnackBarBehavior.floating, // optional: floating snackbar
-      ),
-    );
+
 
 
   }
