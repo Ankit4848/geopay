@@ -98,3 +98,9 @@
     public static **[] values();
     public static ** valueOf(java.lang.String);
 }
+
+# MetaMap specific rules
+-keep class com.metamap.** { *; }
+-keep class com.getmati.** { *; }
+-dontwarn com.metamap.**
+-dontwarn com.getmati.**

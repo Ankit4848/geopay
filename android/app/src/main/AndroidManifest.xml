@@ -2,6 +2,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <uses-permission android:name="android.permission.INTERNET" />
 
+    <!-- Explicitly remove media permissions that are not needed -->
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_VIDEO" tools:node="remove" />
+    <uses-permission android:name="android.permission.READ_MEDIA_AUDIO" tools:node="remove" />
+
     
     <!-- Add proper intent filters for media access -->
     <queries>
@@ -42,7 +47,8 @@
         </intent>
         <!--#docregion android-queries-->
     </queries>
-    <uses-permission android:name="android.permission.CAMERA" />
+    <!-- Camera permission is required for QR code scanning for payment verification -->
+    <uses-permission android:name="android.permission.CAMERA" android:required="false" />
     <uses-feature android:name="android.hardware.camera" android:required="false" />
     <application
         android:label="geopay"

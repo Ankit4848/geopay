@@ -45,5 +45,21 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<!-- Privacy usage descriptions for camera/photos/microphone -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app uses the camera to scan QR codes for payments and to capture photos for KYC verification and profile images.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to your photo library to let you select a profile photo and upload required KYC documents.</string>
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app may save verification images related to KYC to your photo library if you choose to export or save.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Microphone access may be used during KYC verification to capture audio/video if required by the verification provider.</string>
+	<!-- Location permissions for MetaMap SDK -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>GeoPay uses your location information to provide the best possible verification experience during KYC.</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>GeoPay uses your location information to provide the best possible verification experience during KYC.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>GeoPay uses your location information to provide the best possible verification experience during KYC.</string>
 </dict>
 </plist>

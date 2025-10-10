@@ -53,7 +53,7 @@ class _FintechAppState extends State<FintechApp> {
         useMaterial3: true,
         textTheme: const TextTheme().apply(fontFamily: "DMSans"),
         fontFamily: "DMSans",
-        tabBarTheme: const TabBarTheme(),
+        tabBarTheme: const TabBarThemeData(),
       ),
       initialRoute: RouteUtilities.root,
       onGenerateRoute: RouteUtilities.onGenerateRoute,

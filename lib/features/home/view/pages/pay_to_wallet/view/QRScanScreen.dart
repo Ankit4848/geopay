@@ -1,34 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 import 'package:geopay/core/widgets/dialogs/dialog_utilities.dart';
+import 'package:geopay/features/home/view/pages/pay_to_wallet/view/pay_without_qr_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:qr_code_scanner_plus/qr_code_scanner_plus.dart';
 import 'package:qr_code_tools/qr_code_tools.dart';
-import 'package:permission_handler/permission_handler.dart';
-
-// Dummy screen to navigate
-class PayWithQrScreen extends StatelessWidget {
-  final String countryId;
-  final String mobileNumber;
-
-  const PayWithQrScreen({
-    super.key,
-    required this.countryId,
-    required this.mobileNumber,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Pay With QR")),
-      body: Center(
-        child: Text('Country ID: $countryId\nMobile: $mobileNumber'),
-      ),
-    );
-  }
-}
 
 class QRScanScreen extends StatefulWidget {
   const QRScanScreen({Key? key}) : super(key: key);
@@ -88,12 +66,15 @@ class _QRScanScreenState extends State<QRScanScreen> {
     try {
       final data = jsonDecode(code);
 
-      if (data is Map<String, dynamic> &&
-          data.containsKey('mobile_number') &&
-          data.containsKey('country_id')) {
-        Get.off(() => PayWithQrScreen(
-          countryId: data['country_id'].toString(),
-          mobileNumber: data['mobile_number'].toString(),
+      if (data is Map<String, dynamic>) {
+        // Extract country_id and mobile_number if available
+        final countryId = data.containsKey('country_id') ? data['country_id'].toString() : null;
+        final mobileNumber = data.containsKey('mobile_number') ? data['mobile_number'].toString() : null;
+
+        // Navigate to PayWithoutQrScreen with optional parameters
+        Get.off(() => PayWithoutQrScreen(
+          countryId: countryId,
+          mobileNumber: mobileNumber,
         ));
       } else {
         throw Exception("Invalid QR code data");
@@ -151,8 +132,8 @@ class _QRScanScreenState extends State<QRScanScreen> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton.icon(
-                  onPressed: () async {
-                    await Permission.camera.request();
+                  onPressed: () {
+                    // Camera permission is handled automatically by qr_code_scanner_plus
                     controller?.resumeCamera();
                   },
                   icon: const Icon(Icons.camera_alt),

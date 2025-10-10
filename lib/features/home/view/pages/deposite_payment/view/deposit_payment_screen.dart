@@ -50,6 +50,217 @@ class _DepositPaymentScreenState extends State<DepositPaymentScreen> {
     );
   }
 
+  Widget _buildBillingDetailsSection() {
+    return GetBuilder<DepositPaymentController>(
+      builder: (controller) {
+        Widget errorText(String key) {
+          if (controller.fieldErrors[key] == null) return const SizedBox.shrink();
+          return Padding(
+            padding: const EdgeInsets.only(top: 4),
+            child: Text(
+              controller.fieldErrors[key]!,
+              style: const TextStyle(color: Colors.red, fontSize: 12),
+            ),
+          );
+        }
+
+        return Container(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Enter Billing Details",
+                style: FontUtilities.style(
+                  fontSize: 18,
+                  fontWeight: FWT.bold,
+                  fontFamily: FontFamily.poppins,
+                  fontColor: VariableUtilities.theme.primaryColor,
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              // First/Last Name
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.firstNameCtrl,
+                          hintText: 'First Name',
+                          labelText: 'First Name *',
+                          onChange: (_) { controller.fieldErrors.remove('first_name'); controller.update(); },
+                        ),
+                        errorText('first_name'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.lastNameCtrl,
+                          hintText: 'Last Name',
+                          labelText: 'Last Name *',
+                          onChange: (_) { controller.fieldErrors.remove('last_name'); controller.update(); },
+                        ),
+                        errorText('last_name'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Email / Phone
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.emailCtrl,
+                          hintText: 'email@example.com',
+                          labelText: 'Email *',
+                          textInputType: TextInputType.emailAddress,
+                          onChange: (_) { controller.fieldErrors.remove('email'); controller.update(); },
+                        ),
+                        errorText('email'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.phoneCtrl,
+                          hintText: 'Phone',
+                          labelText: 'Phone *',
+                          textInputType: TextInputType.phone,
+                          onChange: (_) { controller.fieldErrors.remove('phone'); controller.update(); },
+                        ),
+                        errorText('phone'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Address (full width)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CustomTextField(
+                    controller: controller.addressCtrl,
+                    hintText: 'Address line',
+                    labelText: 'Address *',
+                    onChange: (_) { controller.fieldErrors.remove('address'); controller.update(); },
+                  ),
+                  errorText('address'),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // City / State
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.cityCtrl,
+                          hintText: 'City',
+                          labelText: 'City *',
+                          onChange: (_) { controller.fieldErrors.remove('city'); controller.update(); },
+                        ),
+                        errorText('city'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.stateCtrl,
+                          hintText: 'State',
+                          labelText: 'State *',
+                          onChange: (_) { controller.fieldErrors.remove('state'); controller.update(); },
+                        ),
+                        errorText('state'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 12),
+
+              // Postal / Country (ISO-2)
+              Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.postalCodeCtrl,
+                          hintText: 'Postal Code',
+                          labelText: 'Postal Code *',
+                          onChange: (_) { controller.fieldErrors.remove('postalcode'); controller.update(); },
+                        ),
+                        errorText('postalcode'),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        CustomTextField(
+                          controller: controller.countryIsoCtrl,
+                          hintText: 'US',
+                          labelText: 'Country (ISO-2) *',
+                          inputFormatters: [
+                            FilteringTextInputFormatter.allow(RegExp('[A-Za-z]')),
+                            LengthLimitingTextInputFormatter(2),
+                          ],
+                          onChange: (val) {
+                            // Force uppercase and clear error
+                            final upper = (val ?? '').toUpperCase();
+                            if (controller.countryIsoCtrl.text != upper) {
+                              controller.countryIsoCtrl.value = controller.countryIsoCtrl.value.copyWith(
+                                text: upper,
+                                selection: TextSelection.collapsed(offset: upper.length),
+                              );
+                            }
+                            controller.fieldErrors.remove('country');
+                            controller.update();
+                          },
+                        ),
+                        errorText('country'),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildCardDetailsSection() {
     return GetBuilder<DepositPaymentController>(
       builder: (controller) => Container(
@@ -610,6 +821,9 @@ class _DepositPaymentScreenState extends State<DepositPaymentScreen> {
                   const SizedBox(height: 4),
                   Image.asset(AssetUtilities.redLine),
                   const SizedBox(height: 10),
+
+                  // Billing Details Section
+                  _buildBillingDetailsSection(),
 
                   // Card Details Section
                   _buildCardDetailsSection(),

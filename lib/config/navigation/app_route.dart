@@ -169,9 +169,13 @@ class RouteUtilities {
           transitionsBuilder: transitionsBuilder,
         );
       case RouteUtilities.payWithoutQRScreen:
+        final args = settings.arguments as Map<String, String?>?;
         return PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) =>
-              const PayWithoutQrScreen(),
+              PayWithoutQrScreen(
+                countryId: args?['countryId'],
+                mobileNumber: args?['mobileNumber'],
+              ),
           transitionsBuilder: transitionsBuilder,
         );
       case RouteUtilities.qrScreen:

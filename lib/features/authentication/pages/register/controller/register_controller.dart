@@ -109,13 +109,39 @@ class RegisterController extends GetxController {
   Future<void> onInit() async {
     if (Get.context != null) {
       clearData();
-
-      commonController.getCountryList(Get.context!);
+      // Load countries and set default to United States of America (US)
+      await commonController.getCountryList(Get.context!);
+      _setDefaultSAIfNeeded();
     }
     super.onInit();
+    // Also try setting default SA when country list updates later
+    ever<List<CountryModel>>(commonController.countryList, (_) {
+      _setDefaultSAIfNeeded();
+    });
     passwordFocus.addListener(() {
       isPasswordFocused.value=passwordFocus.hasFocus;
     },);
+  }
+
+  void _setDefaultSAIfNeeded() {
+    if (selectedCountry.value != null) return;
+    if (commonController.countryList.isEmpty) return;
+    try {
+      final us = commonController.countryList.firstWhere(
+        (c) => (c.iso?.toUpperCase() == 'US') ||
+               (c.iso3?.toUpperCase() == 'USA') ||
+               ((c.name ?? '').toLowerCase() == 'united states') ||
+               ((c.nicename ?? '').toLowerCase() == 'united states') ||
+               ((c.name ?? '').toLowerCase() == 'united states of america') ||
+               ((c.nicename ?? '').toLowerCase() == 'united states of america') ||
+               ((c.currencyCode ?? '').toUpperCase() == 'USD') ||
+               ((c.isdcode ?? '').replaceAll(' ', '') == '+1' || (c.isdcode ?? '').replaceAll(' ', '') == '1'),
+      );
+      selectedCountry.value = us;
+      update();
+    } catch (_) {
+      // SA not in list; do nothing
+    }
   }
 
   // Get Country List

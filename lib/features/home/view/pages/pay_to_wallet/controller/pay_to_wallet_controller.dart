@@ -11,6 +11,7 @@ import '../../../../../authentication/repo/authentication_repo.dart';
 import '../../../../../common/controller/common_controller.dart';
 import '../../../../../common/model/country_model.dart';
 import '../../../../../common/model/user_model.dart';
+import '../../../../../common/repo/common_repo.dart';
 import '../../../../model/ApiErrorModel.dart';
 
 class PayToWalletController extends GetxController {
@@ -22,6 +23,7 @@ class PayToWalletController extends GetxController {
   HomeRepo homeRepo = HomeRepo();
   AuthenticationRepo authenticationRepo = AuthenticationRepo();
   CommonController commonController = Get.find();
+  CommonRepo commonRepo = CommonRepo();
 
   RxList<CountryModel> searchCountryList = <CountryModel>[].obs;
   Rxn<CountryModel> selectedCountry = Rxn<CountryModel>();
@@ -73,7 +75,26 @@ class PayToWalletController extends GetxController {
     }
     update();
   }
+  
   RxBool isbtnClick=false.obs;
+  
+  // Password verification method
+  Future<bool> getPassword(String password) async {
+    EasyLoading.show();
+    Map<String, dynamic> params = {
+      "password": password,
+    };
+
+    print(params);
+    bool? response = await commonRepo.getPassword(
+      Get.context!,
+      params,
+    );
+    print(response);
+    EasyLoading.dismiss();
+    update();
+    return response ?? false;
+  }
   // Register User
   Future<void> payWithoutQr(BuildContext context) async {
     try {

@@ -20,6 +20,8 @@ class EditProfileController extends GetxController {
   GlobalKey<FormState> formKey = GlobalKey<FormState>();
   ProfileRepo profileRepo = ProfileRepo();
   CommonController commonController = Get.find();
+
+
   pickImage(ImageSource source) async {
     // Use one-time permission access approach
     final ImagePicker picker = ImagePicker();
@@ -66,12 +68,6 @@ class EditProfileController extends GetxController {
         if (apiResponse != null) {
           commonController.userModel.value = apiResponse;
           commonController.update();
-
-
-
-
-
-
           DialogUtilities.showDialog(
 
             message:   "Your profile has been updated successfully.",

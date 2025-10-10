@@ -11,7 +11,14 @@ import '../../../../widgets/country_dialog.dart';
 import '../../add_money/widgets/balance_card.dart';
 
 class PayWithoutQrScreen extends StatefulWidget {
-  const PayWithoutQrScreen({super.key});
+  final String? countryId;
+  final String? mobileNumber;
+
+  const PayWithoutQrScreen({
+    super.key,
+    this.countryId,
+    this.mobileNumber,
+  });
 
   @override
   State<PayWithoutQrScreen> createState() => _PayWithoutQrScreenState();
@@ -19,7 +26,32 @@ class PayWithoutQrScreen extends StatefulWidget {
 
 class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
   CommonController commonController = Get.find();
-  PayToWalletController payToWalletController = Get.find();
+  PayToWalletController payToWalletController = Get.put(PayToWalletController(), permanent: false);
+
+  @override
+  void initState() {
+    super.initState();
+    // Auto-populate fields if QR data is provided
+    if (widget.countryId != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _setCountryById(widget.countryId!);
+      });
+    }
+    if (widget.mobileNumber != null) {
+      payToWalletController.mobileCtrl.text = widget.mobileNumber!;
+    }
+  }
+
+  void _setCountryById(String countryId) {
+    try {
+      final country = commonController.countryList.firstWhere(
+        (c) => c.id.toString() == countryId,
+      );
+      payToWalletController.selectedCountry.value = country;
+    } catch (e) {
+      print('Country not found for ID: $countryId');
+    }
+  }
 
   /// 🔹 Centralized validation
   bool _validateFields() {
@@ -60,6 +92,79 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
 
     setState(() {}); // refresh UI
     return isValid;
+  }
+
+  /// 🔹 Password Dialog
+  Future<bool> _showPasswordDialog() async {
+    final TextEditingController passCtrl = TextEditingController();
+    bool success = false;
+
+    await Get.dialog(
+      AlertDialog(
+        backgroundColor: Colors.black,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+        title: const Text(
+          "Enter Password",
+          style: TextStyle(color: Colors.white),
+        ),
+        content: TextField(
+          controller: passCtrl,
+          obscureText: true,
+          style: const TextStyle(color: Colors.white),
+          decoration: InputDecoration(
+            hintText: "Password",
+            hintStyle: const TextStyle(color: Colors.white54),
+            enabledBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white54),
+              borderRadius: BorderRadius.circular(8),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderSide: const BorderSide(color: Colors.white),
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Get.back();
+            },
+            child: const Text(
+              "Cancel",
+              style: TextStyle(color: Colors.white),
+            ),
+          ),
+          ElevatedButton(
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white24,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () async {
+              Get.focusScope?.unfocus();
+              // Password verify API call
+              bool isValid = await payToWalletController.getPassword(
+                passCtrl.text,
+              );
+
+              if (isValid) {
+                success = true;
+                Get.back();
+              } else {
+                Get.snackbar(
+                  "Error",
+                  "Invalid password",
+                  backgroundColor: Colors.red,
+                  colorText: Colors.white,
+                );
+              }
+            },
+            child: const Text("Confirm"),
+          ),
+        ],
+      ),
+      barrierDismissible: false,
+    );
+    return success;
   }
 
   @override
@@ -278,16 +383,6 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
             ),
             child: CustomFlatButton(
               onPressed: () async {
-
-
-
-
-
-
-
-
-
-
                 FocusScope.of(context).unfocus();
 
                 if (!_validateFields()) {
@@ -295,6 +390,10 @@ class _PayWithoutQrScreenState extends State<PayWithoutQrScreen> {
                       "Please fix the errors before proceeding.");
                   return;
                 }
+
+                // Show password dialog before proceeding
+                bool isVerified = await _showPasswordDialog();
+                if (!isVerified) return;
 
                 if (payToWalletController.isbtnClick.value) return;
 

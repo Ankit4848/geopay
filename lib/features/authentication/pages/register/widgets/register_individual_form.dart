@@ -20,8 +20,25 @@ class RegisterIndividualForm extends StatelessWidget {
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
       child: GetBuilder<RegisterController>(
-        init: RegisterController(),
         builder: (registerController) {
+          // Fallback: ensure default country is United States of America (US) if not set yet and list is available
+          final commonController = Get.find<CommonController>();
+          if (registerController.selectedCountry.value == null && commonController.countryList.isNotEmpty) {
+            try {
+              final us = commonController.countryList.firstWhere(
+                (c) => (c.iso?.toUpperCase() == 'US') ||
+                       (c.iso3?.toUpperCase() == 'USA') ||
+                       ((c.name ?? '').toLowerCase() == 'united states') ||
+                       ((c.nicename ?? '').toLowerCase() == 'united states') ||
+                       ((c.name ?? '').toLowerCase() == 'united states of america') ||
+                       ((c.nicename ?? '').toLowerCase() == 'united states of america') ||
+                       ((c.currencyCode ?? '').toUpperCase() == 'USD') ||
+                       ((c.isdcode ?? '').replaceAll(' ', '') == '+1' || (c.isdcode ?? '').replaceAll(' ', '') == '1'),
+              );
+              registerController.selectedCountry.value = us;
+              registerController.update();
+            } catch (_) {}
+          }
           return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisSize: MainAxisSize.min,
@@ -251,8 +268,8 @@ class RegisterIndividualForm extends StatelessWidget {
                       width: 100,
                       decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
                           borderRadius: BorderRadius.circular(10)),
-                      padding: EdgeInsets.symmetric(horizontal: 12.0),
-                      child: Center(child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                      child: const Center(child: Text("Send OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
                     ),
                   ),
                 ),
@@ -261,7 +278,6 @@ class RegisterIndividualForm extends StatelessWidget {
                     () => Visibility(
                   visible: registerController.isEmailOTPShow.value &&
                       !registerController.isEmailVerify.value,
-
                   child: FadeSlideTransition(
                     child: Column(
                       children: [
@@ -336,8 +352,8 @@ class RegisterIndividualForm extends StatelessWidget {
                             width: 120,
                             decoration: BoxDecoration( color:  VariableUtilities.theme.primaryColor,
                                 borderRadius: BorderRadius.circular(10)),
-                            padding: EdgeInsets.symmetric(horizontal: 12.0),
-                            child: Center(child: Text("Resend OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
+                            padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                            child: const Center(child: Text("Resend OTP",style: TextStyle(fontWeight: FontWeight.bold,color: Colors.white),)),
                           ): Text(
                             "Resend OTP in ${registerController.emailTimerSeconds.value} sec",
                             style: TextStyle(
@@ -501,11 +517,10 @@ class RegisterIndividualForm extends StatelessWidget {
                             if (registerController
                                 .selectedCountry.value ==
                                 null) {
-                              FancySnackbar.showSnackbar(context,
-                                  message:
-                                  "Please select Country code",duration: 5,
-                                  snackBarType:
-                                  FancySnackBarType.error);
+                              DialogUtilities.showDialog(
+                                title: "Error",
+                                message: "Please select Country code",
+                              );
                             } else if (registerController
                                 .phoneNumberCtrl.text
                                 .trim()
@@ -513,11 +528,10 @@ class RegisterIndividualForm extends StatelessWidget {
                               registerController
                                   .sendPhoneVerificationOTP(context);
                             } else {
-                              FancySnackbar.showSnackbar(context,
-                                  message:
-                                  'Please enter valid mobile number',duration: 5,
-                                  snackBarType:
-                                  FancySnackBarType.error);
+                              DialogUtilities.showDialog(
+                                title: "Error",
+                                message: 'Please enter valid mobile number',
+                              );
                             }
                           },
                           child: Container(

@@ -4,7 +4,6 @@ import 'package:geopay/features/home/view/pages/pay_to_wallet/view/QRScanScreen.
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:get/get.dart';
-import 'package:permission_handler/permission_handler.dart';
 
 import '../../../../../../core/core.dart';
 import '../../add_money/widgets/balance_card.dart';
@@ -32,8 +31,6 @@ class PayToWallletScreen extends StatelessWidget {
                   Bounce(
                     onTap: () {
                       Get.toNamed(RouteUtilities.payWithoutQRScreen);
-
-
                     },
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -65,15 +62,9 @@ class PayToWallletScreen extends StatelessWidget {
                     height: 60,
                   ),
                   Bounce(
-                    onTap: () async {
-                      final status = await Permission.camera.request();
-                      if (status.isGranted) {
-                        Get.to(() => const QRScanScreen());
-                      } else {
-                        openAppSettings(); // optional: direct to app settings
-                      }
-
-
+                    onTap: () {
+                      // Camera permission is handled automatically by qr_code_scanner_plus
+                      Get.to(() => const QRScanScreen());
                     },
                     child: Column(
                       children: [
